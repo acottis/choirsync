@@ -69,6 +69,7 @@ const both_audio = () => {
 
             audio.addEventListener("canplaythrough", event => {
                 times[1]=new Date();
+                audio.play(); 
                 mediaRecorder.start();
                 times[3]=new Date();
                 console.log(event) 
@@ -76,9 +77,10 @@ const both_audio = () => {
 
             mediaRecorder.addEventListener("start", event => {              
                 times[2]=new Date();
-                audio.play();         
+                // audio.play();         
                 times[4]=new Date();
-                console.log(event)   
+                console.log(event)
+
                 setTimeout(() => {
                     mediaRecorder.stop();
                     times[5]=new Date();
@@ -86,9 +88,6 @@ const both_audio = () => {
                     // audio.currentTime = 0;
                 }, 15000);                
             })
-
-            // MOVE DIS
-         
 
             mediaRecorder.addEventListener("dataavailable", event => {
                 audioChunks.push(event.data);
