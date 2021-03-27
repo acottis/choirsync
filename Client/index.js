@@ -62,7 +62,9 @@ const both_audio = () => {
                 mimeType : 'audio/webm'
             });
             
-            times[0]=new Date();  
+            times[0]=new Date(); 
+            
+            
             const audio = new Audio(audio_file);
 
             audio.addEventListener("canplaythrough", event => {
@@ -76,16 +78,17 @@ const both_audio = () => {
                 times[2]=new Date();
                 audio.play();         
                 times[4]=new Date();
-                console.log(event)                
+                console.log(event)   
+                setTimeout(() => {
+                    mediaRecorder.stop();
+                    times[5]=new Date();
+                    audio.pause();
+                    // audio.currentTime = 0;
+                }, 15000);                
             })
 
-            
-            setTimeout(() => {
-                mediaRecorder.stop();
-                times[5]=new Date();
-                audio.pause();
-                // audio.currentTime = 0;
-            }, 15000);            
+            // MOVE DIS
+         
 
             mediaRecorder.addEventListener("dataavailable", event => {
                 audioChunks.push(event.data);
