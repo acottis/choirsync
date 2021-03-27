@@ -57,27 +57,25 @@ const both_audio = () => {
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
             
+            const audioChunks = [];
             const mediaRecorder = new MediaRecorder(stream, {
                 mimeType : 'audio/webm'
             });
-
-            const audio = new Audio(audio_file);
             
-            times[0]=new Date();
-
-            const audioChunks = [];
+            times[0]=new Date();  
+            const audio = new Audio(audio_file);
 
             audio.addEventListener("canplaythrough", event => {
-                times[3]=new Date();
+                times[1]=new Date();
                 mediaRecorder.start();
+                times[3]=new Date();
                 console.log(event) 
-                
-
             })
 
             mediaRecorder.addEventListener("start", event => {              
                 times[2]=new Date();
-                audio.play();
+                audio.play();         
+                times[4]=new Date();
                 console.log(event)                
             })
 
@@ -95,16 +93,16 @@ const both_audio = () => {
             });
             
             mediaRecorder.addEventListener("stop", () => {
-                times[4]=new Date();
+                //times[4]=new Date();
                 const audioBlob = new Blob(audioChunks);
                 const audioUrl = URL.createObjectURL(audioBlob);
                 const audio_recording = new Audio(audioUrl);
 
-                const text = `\n ${times[0]-times[0]} audio.play\n
-                ${times[2]-times[0]} playinglistener\n
-                ${times[3]-times[0]} mediaRecorder.start\n
-                ${times[5]-times[0]} mediaRecorder.stop\n
-                ${times[4]-times[0]} stoplistener`
+                const text = `\n ${times[0]-times[0]} audio_load\n
+                ${times[1]-times[0]} audio_canplaythrough_listen\n
+                ${times[3]-times[0]} mediarecorder.start\n
+                ${times[2]-times[0]} mediaRecorder_start_listen\n
+                ${times[4]-times[0]} audio.play`
                 var b = document.createElement('b');
                 document.body.appendChild(b);
                 b.innerText = text;
