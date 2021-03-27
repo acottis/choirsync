@@ -59,34 +59,11 @@ const both_audio = () => {
 
             audio.play();
             times[0]=new Date();
-            const start = new Date();
 
             const audioChunks = [];
             const mediaRecorder = new MediaRecorder(stream, {
                 mimeType : 'audio/webm'
             });
-
-            audio.addEventListener("pause", event => {
-                times[1]=new Date();
-                const ended = new Date();
-                const delta = ended - start
-                console.log(delta)
-                var a = document.createElement('a');
-                document.body.appendChild(a);
-                a.innerText = delta;
-
-                const text = `\n ${times[0]*1} audio.play\n
-                ${times[1]*1} pause listener\n
-                ${times[2]*1} playing listener\n
-                ${times[3]*1} mediaRecorder.start\n
-                ${times[4]*1} stop listener\n
-                ${times[5]*1} mediaRecorder.stop\n
-                ${times[6]*1} audio.pause\n`
-                var b = document.createElement('b');
-                document.body.appendChild(b);
-                b.innerText = text;
-
-            })
 
             audio.addEventListener("playing", event => {
                 times[2]=new Date();
@@ -94,35 +71,42 @@ const both_audio = () => {
                 console.log(event)
                 mediaRecorder.start();
                 times[3]=new Date();
-                
-                mediaRecorder.addEventListener("dataavailable", event => {
-                    audioChunks.push(event.data);
-                });
-    
-                mediaRecorder.addEventListener("stop", () => {
-                    times[4]=new Date();
-                    const audioBlob = new Blob(audioChunks);
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    const audio_recording = new Audio(audioUrl);
-                    console.log(audioChunks)
-                    audio_recording.play();
-                    download(audioChunks);
-                    // fetch(`http://localhost:3000/recording`, {
-                    //     method: "POST",
-                    //     body: audioChunks
-                    // });
-                });
-    
-    
-                setTimeout(() => {
-                    console.log()
-                    mediaRecorder.stop();
-                    times[5]=new Date();
-                    audio.pause();
-                    times[6]=new Date();
-                    audio.currentTime = 0;
-                }, 15000);
             })
+        
+            setTimeout(() => {
+                mediaRecorder.stop();
+                times[5]=new Date();
+                audio.pause();
+                audio.currentTime = 0;
+            }, 15000);            
+
+            mediaRecorder.addEventListener("dataavailable", event => {
+                audioChunks.push(event.data);
+            });
+            
+            mediaRecorder.addEventListener("stop", () => {
+                times[4]=new Date();
+                const audioBlob = new Blob(audioChunks);
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio_recording = new Audio(audioUrl);
+
+                const text = `\n ${times[0]-times[0]} audio.play\n
+                ${times[2]-times[0]} playinglistener\n
+                ${times[3]-times[0]} mediaRecorder.start\n
+                ${times[5]-times[0]} mediaRecorder.stop\n
+                ${times[4]-times[0]} stoplistener`
+                var b = document.createElement('b');
+                document.body.appendChild(b);
+                b.innerText = text;
+
+                audio_recording.play();
+                download(audioChunks);
+                // fetch(`http://localhost:3000/recording`, {
+                //     method: "POST",
+                //     body: audioChunks
+                // });
+
+            });
         });
 };
 
