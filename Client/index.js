@@ -3,7 +3,7 @@ const button_rec = document.getElementById("click_me_record")
 const button_both = document.getElementById("click_me_both")
 const audio_file = 'Music/InDulci.mpeg'
 
-const audio = new Audio(audio_file);
+
 
 const play_audio = () => {
     //const audio = new Audio(audio_file);
@@ -56,32 +56,36 @@ const times = []
 const both_audio = () => {
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
-
-            audio.play();
-            times[0]=new Date();
-
-            const audioChunks = [];
+            
             const mediaRecorder = new MediaRecorder(stream, {
                 mimeType : 'audio/webm'
             });
 
-            audio.addEventListener("playing", event => {
+            const audio = new Audio(audio_file);
+            
+            times[0]=new Date();
+
+            const audioChunks = [];
+
+            audio.addEventListener("canplaythrough", event => {
                 times[2]=new Date();
-        
+                audio.play();
                 console.log(event)
+
                 mediaRecorder.start();
                 times[3]=new Date();
             })
-        
+            
             setTimeout(() => {
                 mediaRecorder.stop();
                 times[5]=new Date();
                 audio.pause();
-                audio.currentTime = 0;
+                // audio.currentTime = 0;
             }, 15000);            
 
             mediaRecorder.addEventListener("dataavailable", event => {
                 audioChunks.push(event.data);
+                
             });
             
             mediaRecorder.addEventListener("stop", () => {
