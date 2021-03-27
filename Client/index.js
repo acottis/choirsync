@@ -89,7 +89,7 @@ const both_audio = () => {
                     mediaRecorder.stop();
                     audio.pause();
                     audio.currentTime = 0;
-                }, 5000);
+                }, 15000);
             })
 
             audio.play();
