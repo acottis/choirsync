@@ -68,13 +68,19 @@ const both_audio = () => {
             const audioChunks = [];
 
             audio.addEventListener("canplaythrough", event => {
+                times[3]=new Date();
+                mediaRecorder.start();
+                console.log(event) 
+                
+
+            })
+
+            mediaRecorder.addEventListener("start", event => {              
                 times[2]=new Date();
                 audio.play();
-                console.log(event)
-
-                mediaRecorder.start();
-                times[3]=new Date();
+                console.log(event)                
             })
+
             
             setTimeout(() => {
                 mediaRecorder.stop();
