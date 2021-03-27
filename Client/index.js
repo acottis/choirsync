@@ -52,20 +52,22 @@ const rec_audio = () => {
 };
 
 const both_audio = () => {
-
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
 
+            audio.play();
 
+            const audioChunks = [];
+            const mediaRecorder = new MediaRecorder(stream, {
+                mimeType : 'audio/webm'
+            });
 
-            audio.addEventListener("play", event => {
+            audio.addEventListener("playing", event => {
+
+                
                 console.log(event)
-                const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType : 'audio/webm'
-                });
                 mediaRecorder.start();
-    
-                const audioChunks = [];
+                
                 mediaRecorder.addEventListener("dataavailable", event => {
                     audioChunks.push(event.data);
                 });
@@ -91,8 +93,6 @@ const both_audio = () => {
                     audio.currentTime = 0;
                 }, 15000);
             })
-
-            audio.play();
         });
 };
 
