@@ -125,6 +125,8 @@ const post_audio = (audioChunks) => {
     fetch(`/api/v0/recording`, {
         method: "post",
         body: fd
+    }).then( res => {
+        console.log(res)
     });
 }
 
