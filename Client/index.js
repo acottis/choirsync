@@ -1,4 +1,4 @@
-const audio_url = 'static/audio/'
+const audio_url = 'https://storage.googleapis.com/choirsync.appspot.com/static/audio/'
 const button_play = document.getElementById("click_me_play")
 const button_rec = document.getElementById("click_me_record")
 const button_both = document.getElementById("click_me_both")
