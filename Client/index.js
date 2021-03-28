@@ -13,7 +13,7 @@ const play_audio = () => {
 
 function download(recordedChunks) {
     var blob = new Blob(recordedChunks, {
-      type: 'audio/webm'
+        type: 'audio/webm'
     });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -23,7 +23,7 @@ function download(recordedChunks) {
     a.download = 'test.webm';
     a.click();
     window.URL.revokeObjectURL(url);
-  }
+}
 
 
 
@@ -54,68 +54,82 @@ const rec_audio = () => {
 const times = []
 
 const both_audio = () => {
+    let played = false;
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
-            
-            const dict = {};
 
+            const timers = {};
             const audioChunks = [];
             const mediaRecorder = new MediaRecorder(stream, {
-                mimeType : 'audio/webm'
+                mimeType: 'audio/webm'
             });
-            
-            dict["Audio Load"] = new Date(); 
-            
-            
+
+            timers["AudioLoad"] = new Date();
             const audio = new Audio(audio_file);
+            timers["AudioLoaded"] = new Date();
 
             audio.addEventListener("canplaythrough", event => {
-                dict["Canplay Listener"] = new Date();
-                audio.play(); 
+                timers["CanplayListener"] = new Date();
+                audio.play();
+                timers["PlayStarted"] = new Date();
                 mediaRecorder.start();
-                dict["Play and Record Started"] = new Date();
-                console.log(event) 
+                timers["RecordStarted"] = new Date();
                 setTimeout(() => {
                     mediaRecorder.stop();
+                    timers["RecordPaused"] = new Date();
                     audio.pause();
-                    audio.currentTime = 0;
-                }, 15000);             
+                    timers["AudioPaused"] = new Date();
+                    //audio.currentTime = 0;
+                }, 2000);
             })
 
             mediaRecorder.addEventListener("dataavailable", event => {
                 audioChunks.push(event.data);
+                console.log("New Chunk")
             });
-            
+
             mediaRecorder.addEventListener("stop", () => {
-                const audioBlob = new Blob(audioChunks);
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio_recording = new Audio(audioUrl);
-
-                const text = `\n ${dict["Audio Load"]-dict["Audio Load"]} audio_load
-                ${dict["Canplay Listener"]-dict["Audio Load"]} Canplay Listener
-                ${dict["Play and Record Started"]-dict["Audio Load"]} Play and Record Started`
-
-                var b = document.createElement('b');
-                document.body.appendChild(b);
-                b.innerText = text;
-
-                audio_recording.play();
-                download(audioChunks);
-                // fetch(`http://localhost:3000/recording`, {
-                //     method: "POST",
-                //     body: audioChunks
-                // });
+                //download(audioChunks);
+                post_audio(audioChunks);
+                //replay_audio(audioChunks);
+                log_times(timers)
 
             });
         });
 };
+
+const log_times = (timers) =>{
+    let text = "\nTimers"
+    for (const [key, value] of Object.entries(timers)) {
+        text += `\n${key}, ${value - timers["AudioLoad"]}`
+    }
+    var b = document.createElement('b');
+    document.body.appendChild(b);
+    b.innerText = text;
+}
+
+const replay_audio = (audioChunks) => {
+    const audioBlob = new Blob(audioChunks);
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio_recording = new Audio(audioUrl);
+    audio_recording.play();
+}
+
+const post_audio = (audioChunks) => {
+    const blob = new Blob(audioChunks);
+    const reader = new FileReader();
+
+    const fd = new FormData();
+    fd.append('recording', blob, "recording.webm")
+
+    fetch(`/api/v0/recording`, {
+        method: "post",
+        body: fd
+    });
+}
 
 
 
 button_play.onclick = play_audio
 button_rec.onclick = rec_audio
 button_both.onclick = both_audio
-
-
-
-
