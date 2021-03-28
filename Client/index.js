@@ -1,7 +1,8 @@
+const audio_url = 'static/audio/'
 const button_play = document.getElementById("click_me_play")
 const button_rec = document.getElementById("click_me_record")
 const button_both = document.getElementById("click_me_both")
-const audio_file = 'Music/InDulci.mpeg'
+const audio_file = audio_url + "InDulci.webm"
 
 
 
