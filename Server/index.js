@@ -2,7 +2,8 @@ const express = require('express')
 const multer = require('multer')
 const fs = require('fs')
 
-const upload = multer({ dest: 'temp/' }).single('recording')
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single('recording')
 
 
 const app = express()
@@ -24,11 +25,16 @@ app.post('/api/v0/recording', (req, res) => {
                 message: "Non Multer Error, check server logs"
             })
         }
-        console.log(req.body)
         console.log(req.file)
+        const uniqueSuffix = Date.now()
+        fs.writeFile(`temp\\${uniqueSuffix}-${req.file.originalname}`, req.file.buffer, (err) => {
+            if (err) throw err;
+            console.log
+        })
         res.json({
             file: req.file.originalname, 
-            status: "success"
+            status: "success",
+            message: `${req.file.originalname} has been recieved by the server`
         })
     })
 
