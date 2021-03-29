@@ -30,7 +30,7 @@ app.post('/api/v0/recording', (req, res) => {
         }
         try {
             // Write file to temp folder
-            fs.writeFile(`temp\\${Date.now()}-${req.file.originalname}`, req.file.buffer, (err) => {
+            fs.writeFile(`./${Date.now()}-${req.file.originalname}`, req.file.buffer, (err) => {
                 if (err) throw err;
                 console.log
             })
