@@ -36,7 +36,7 @@ app.post('/api/v0/recording', (req, res) => {
         })
 
         // Save a recording to DB
-        db.store_recording("${uniqueSuffix}-${req.file.originalname}", req.file.buffer, new Date().toISOString())
+        db.store_recording(`${uniqueSuffix}-${req.file.originalname}`, req.file.buffer, new Date().toISOString())
 
         res.json({
             file: req.file.originalname, 
