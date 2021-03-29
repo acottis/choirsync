@@ -4,7 +4,9 @@ steps:
   args: ["run", "create-env"]
   env:
   - 'DB_URI=${_DB_URI}'
-# - name: 
+- name: node
+  entrypoint: npm
+  args: ["run", "start"]
 # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
 #   entrypoint: 'bash'
 #   args: ['-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy']
