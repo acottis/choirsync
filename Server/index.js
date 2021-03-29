@@ -1,6 +1,9 @@
+require('dotenv').config()
+
 const express = require('express')
 const multer = require('multer')
 const fs = require('fs')
+const db = require('./mongodb')
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single('recording')
@@ -25,12 +28,16 @@ app.post('/api/v0/recording', (req, res) => {
                 message: "Non Multer Error, check server logs"
             })
         }
-        console.log(req.file)
-        const uniqueSuffix = Date.now()
-        fs.writeFile(`temp\\${uniqueSuffix}-${req.file.originalname}`, req.file.buffer, (err) => {
+        
+        // Write file to temp folder
+        fs.writeFile(`temp\\${Date.now()}-${req.file.originalname}`, req.file.buffer, (err) => {
             if (err) throw err;
             console.log
         })
+
+        // Save a recording to DB
+        db.store_recording("${uniqueSuffix}-${req.file.originalname}", req.file.buffer, new Date().toISOString())
+
         res.json({
             file: req.file.originalname, 
             status: "success",

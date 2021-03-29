@@ -1,6 +1,8 @@
 Music/
 static/
 temp/
+.env
+
 # Logs
 logs
 *.log

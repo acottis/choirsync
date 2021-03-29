@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "set NODE_ENV=production&& node Server/index.js",
-    "dev": "nodemon Server/index.js "
+    "dev": "nodemon Server/index.js",
+    "create-env": "printenv > .env"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,9 @@
   },
   "homepage": "https://github.com/acottis/choirsync#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "monk": "^7.3.3",
     "multer": "^1.4.2"
   }
 }
