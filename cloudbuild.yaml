@@ -1,16 +1,10 @@
 steps:
 # - name: node
 #   entrypoint: npm
-#   args: ["i"]
-- name: node
-  entrypoint: npm
-  args: ["run", "create-env"]
-  env:
-  - 'DB_URI=${_DB_URI}'
+#   args: ["run", "create-env"]
+#   env:
+#   - 'DB_URI=${_DB_URI}'
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'bash'
   args: ['-c', 'gcloud app deploy']
-# - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-#   entrypoint: 'bash'
-#   args: ['-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy']
 timeout: '1600s'
