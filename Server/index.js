@@ -28,21 +28,30 @@ app.post('/api/v0/recording', (req, res) => {
                 message: "Non Multer Error, check server logs"
             })
         }
-        
-        // Write file to temp folder
-        fs.writeFile(`temp\\${Date.now()}-${req.file.originalname}`, req.file.buffer, (err) => {
-            if (err) throw err;
-            console.log
-        })
+        try {
+            // Write file to temp folder
+            fs.writeFile(`temp\\${Date.now()}-${req.file.originalname}`, req.file.buffer, (err) => {
+                if (err) throw err;
+                console.log
+            })
 
-        // Save a recording to DB
-        db.store_recording(`${uniqueSuffix}-${req.file.originalname}`, req.file.buffer, new Date().toISOString())
+            // Save a recording to DB
+            db.store_recording(`${req.file.originalname}`, req.file.buffer, new Date().toISOString())
 
-        res.json({
-            file: req.file.originalname, 
-            status: "success",
-            message: `${req.file.originalname} has been recieved by the server`
-        })
+            res.json({
+                file: req.file.originalname,
+                status: "success",
+                message: `${req.file.originalname} has been recieved by the server`
+            })
+        }
+        catch(err){
+            res.json({
+                file: req.file.originalname,
+                status: "failure",
+                message: `${req.file.originalname} could not be processed`
+            })
+            console.log(err)
+        }
     })
 
 })
