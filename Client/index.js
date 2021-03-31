@@ -8,7 +8,8 @@ const audio_file = audio_url + "InDulci.webm"
 
 const play_audio = () => {
     //const audio = new Audio(audio_file);
-    audio.play();
+
+    //audio.play();
 }
 
 
@@ -81,7 +82,7 @@ const both_audio = () => {
                     audio.pause();
                     timers["AudioPaused"] = new Date();
                     //audio.currentTime = 0;
-                }, 2000);
+                }, 1000);
             })
 
             mediaRecorder.addEventListener("dataavailable", event => {
@@ -118,7 +119,6 @@ const replay_audio = (audioChunks) => {
 
 const post_audio = (audioChunks) => {
     const blob = new Blob(audioChunks);
-    const reader = new FileReader();
 
     const fd = new FormData();
     fd.append('recording', blob, "recording.webm")

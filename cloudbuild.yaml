@@ -4,6 +4,7 @@ steps:
   args: ["run", "create-env"]
   env:
   - 'DB_URI=${_DB_URI}'
+  - 'DISCORD_ENDPOINT=${_DISCORD_ENDPOINT}'
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'bash'
   args: ['-c', 'gcloud app deploy']
