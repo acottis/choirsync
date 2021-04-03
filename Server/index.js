@@ -8,7 +8,6 @@ const fs = require('fs')
 const FormData = require('form-data');
 const { Readable } = require('stream');
 const { Storage } = require('@google-cloud/storage');
-const { delimiter } = require('path');
 
 const password_required = "hello"
 
@@ -21,11 +20,15 @@ const app = express()
 app.use(express.json())
 const port = process.env.PORT || 8080
 
-app.post('/api/v0/files', (req, res) => {
+app.post('/api/v0/files', async (req, res) => {
     if (req.body.password == password_required) {
 
-        const songs = listFiles()
-        res.send(songs)
+        const songs = await listFiles()
+        res.json({
+            songs: songs,
+            status: "success",
+            message: "Sending song names..."
+        })
     } else {
         res.json({
             status: "failure",
@@ -146,7 +149,7 @@ async function listFiles() {
     files.forEach(file => {
         let split_path = file.name.split("/")
         let song = split_path[split_path.length - 1]
-        let part = song.split("_")[1]
+        let part = song.split("_")[1].replace(".webm","")
         let folder = split_path[split_path.length - 2]
         songs.push({
             song: folder,

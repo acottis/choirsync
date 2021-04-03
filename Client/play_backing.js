@@ -1,7 +1,6 @@
 import * as funcs from "/play_pause_stop.js"
 
-import {backing_track_file} from "/choose_song.js"
-import {song_is_chosen} from "/choose_song.js"
+import {backing_track_file, song_is_chosen} from "/choose_song.js"
 
 const button_play = document.getElementById("button_play")
 const button_pause_play = document.getElementById("button_pause_play")
@@ -12,10 +11,6 @@ let backing_track_play
 let prev_track
 
 button_play.onclick = function(){
-    console.log(song_is_chosen)
-    console.log(prev_track)
-    console.log(backing_track_file)
-    console.log(song_is_loaded)
     if (song_is_chosen){
         if (prev_track != backing_track_file || song_is_loaded == false) {
             backing_track_play = new Audio(backing_track_file);

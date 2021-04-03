@@ -1,27 +1,30 @@
-import {change_song_names} from "/choose_song.js"
+import {set_up_songs} from "/choose_song.js"
 
 const startdiv = document.getElementById("welcome")
 const maindiv = document.getElementById("requires_password")
 maindiv.style.display = "none"
 
-const password_entered = document.getElementById("password_entered")
+const password_element = document.getElementById("password_entered")
+export let password_entered
+
 const form_authenticate = document.getElementById("form_authenticate")
 
 const log_in = () => {
+    password_entered = password_element.value
     show_page()
     //stop page refresh on form submit
     return false
 }
 
 const show_page = async () => {
-    authenticate(password_entered.value).then ( password_correct => {
+    authenticate(password_entered).then ( password_correct => {
         if (password_correct) {
             startdiv.style.display = "none"
             maindiv.style.display = "block"
-            change_song_names()
+            set_up_songs()
         }
         //remove this
-        else if (password_entered.value == "letmeinanyway") {
+        else if (password_entered == "letmeinanyway") {
             startdiv.style.display = "none"
             maindiv.style.display = "block"
         }
