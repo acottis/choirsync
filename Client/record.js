@@ -130,19 +130,19 @@ const add_recording_to_page = (index) => {
 }
 
 const send_recording = (recording) => {
-    const song_name = recording.song
     const singer_name = prompt("What is your name?")
-    const singing_part = prompt("What part are you singing?")
+    const send_song_name = recording.song
+    const send_singing_part = prompt("What part are you singing?")
     let message = ""
     if (confirm("Do you want to add a message?")){
         message = prompt("Add a message to go with your recording")
     }
-    const confirm_text = `Hello ${singer_name}, you are about to send your recording of ${song_name}, ${singing_part} part`
+    const confirm_text = `Hello ${singer_name}, you are about to send your recording of ${send_song_name}, ${send_singing_part} part`
     if (confirm(confirm_text)){
         const date_id = new Date(Date.now())
 
         const fd = new FormData();
-        fd.append('recording', recording.blob, `${song_name}_${singer_name}_${singing_part}_${date_id.toISOString()}.webm`)
+        fd.append('recording', recording.blob, `${send_song_name}_${singer_name}_${send_singing_part}_${date_id.toISOString()}.webm`)
         fd.append('singer_name', singer_name)
         fd.append('message', message)
         fd.append('password', password_entered)
