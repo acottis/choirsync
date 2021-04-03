@@ -1,4 +1,4 @@
-let audio_playing = false
+export let audio_playing = false
 
 export const play_audio = (current_audio) => {
     if (audio_playing == false){

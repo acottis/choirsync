@@ -12,21 +12,22 @@ const log_in = () => {
 }
 
 const show_page = async () => {
-    authenticate().then ( password_correct => {
+    authenticate(password_entered.value).then ( password_correct => {
         if (password_correct) {
             startdiv.style.display = "none"
             maindiv.style.display = "block"
         }
-        else if (password_entered.value="letmeinanyway") {
+        //remove this
+        else if (password_entered.value == "letmeinanyway") {
             startdiv.style.display = "none"
             maindiv.style.display = "block"
         }
     })
 }
 
-const authenticate = () => {
+const authenticate = (password_passed) => {
     return new Promise (resolve =>{
-        const password_send = {password: password_entered.value}
+        const password_send = {password: password_passed}
 
         fetch(`/api/v0/authenticate`, {
             method: "post",

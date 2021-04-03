@@ -77,7 +77,7 @@ app.post('/api/v0/recording', (req, res) => {
         else{
             res.json({
                 status: "failure",
-                message: "Go away"
+                message: "Wrong password, how did you get in?"
             })
         }
     })
@@ -95,7 +95,7 @@ const discord_webhook = (req) => {
     fd.append("file", audio, {
         filename: req.file.originalname
     })
-    fd.append("content", `Recieved ${req.file.originalname} from ${req.ip}`)
+    fd.append("content", `${req.body.singer_name} said: "${req.body.message}"`)
 
     fetch(`https://discord.com/api/webhooks/${process.env.DISCORD_ENDPOINT}`,
     {

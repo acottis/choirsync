@@ -8,6 +8,7 @@ const button_send_rec = document.getElementById("button_send_rec")
 import * as funcs from "/play_pause_stop.js"
 
 import {backing_track_file} from "/choose_song.js"
+import {song_name} from "/choose_song.js"
 
 let record_mode = false
 let recording_audio
@@ -15,7 +16,7 @@ let recording_blob
 let recording_ready = false
 
 const start_recording = () => {
-    if (record_mode == false){
+    if (funcs.audio_playing == false && record_mode == false){
         record_mode = true
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
@@ -79,9 +80,15 @@ const start_recording = () => {
 
 const send_recording = () => {
     if (recording_ready) {
+        const singer_name = prompt("What is your name?")
+        const singing_part = prompt("What part are you singing?")
+        const message = prompt("message?")
+        const date_id = new Date(Date.now())
+
         const fd = new FormData();
-        fd.append('recording', recording_blob, "recording.webm")
-        fd.append('message', "i like you adam")
+        fd.append('recording', recording_blob, `${song_name}_${singer_name}_${singing_part}_${date_id.toISOString()}.webm`)
+        fd.append('singer_name', singer_name)
+        fd.append('message', message)
         fd.append('password', password_entered.value)
 
         fetch(`/api/v0/recording`, {
