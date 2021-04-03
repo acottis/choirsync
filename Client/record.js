@@ -11,7 +11,7 @@ let rec_audio_playing = false
 
 const start_recording = () => {
     if (backing_audio_playing || rec_audio_playing){
-        alert("Not started recording, please pause music first")
+        alert("Recording not started, please pause music first")
     }
     else if (!record_mode && song_is_chosen){
         record_mode = true
@@ -87,7 +87,7 @@ const add_recording_to_page = (index) => {
     const new_recording_div = document.createElement("div")
     new_recording_div.id = `recording_${recordings[index].time}`
     
-    const recording_text = document.createTextNode(`Recording of ${recordings[index].song} using ${recordings[index].part} from ${recordings[index].time} `) 
+    const recording_text = document.createTextNode(`Recording of ${recordings[index].song} using ${recordings[index].part} part from ${recordings[index].time} `) 
     new_recording_div.appendChild(recording_text)
     new_recording_div.appendChild(document.createElement("br"))
 
@@ -148,7 +148,6 @@ const send_recording = (recording) => {
 
     if (response_text != "cancelled"){
         if (confirm(response_text)){
-            console.log("hello")
             const date_id = new Date(Date.now())
 
             const fd = new FormData();
@@ -180,10 +179,6 @@ const send_recording = (recording) => {
     else{
         alert("Recording not sent")
     }
-}
-
-const yucky_prompts = (song) => {
-    return [response_text, message]
 }
 
 const delete_recording = (id) => {
