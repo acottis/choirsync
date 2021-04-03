@@ -26,11 +26,12 @@ app.post('/api/v0/files', (req, res) => {
 
         const songs = listFiles()
         res.send(songs)
+    } else {
+        res.json({
+            status: "failure",
+            message: "Wrong password, how did you get in?"
+        })
     }
-    res.json({
-        status: "failure",
-        message: "Wrong password, how did you get in?"
-    })
 })
 
 app.post('/api/v0/authenticate', (req, res) => {
@@ -144,11 +145,11 @@ async function listFiles() {
 
     files.forEach(file => {
         let split_path = file.name.split("/")
-        let song = split_path[split_path.length-1]
+        let song = split_path[split_path.length - 1]
         let part = song.split("_")[1]
-        let folder = split_path[split_path.length-2]
+        let folder = split_path[split_path.length - 2]
         songs.push({
-            song :folder,
+            song: folder,
             part: part
         })
     })
