@@ -4,6 +4,7 @@ const audio_base_url = 'https://storage.googleapis.com/choirsync.appspot.com/sta
 
 const song_name_choose = document.getElementById("choose_song")
 const singing_part_choose = document.getElementById("choose_track")
+const backing_player = document.getElementById("backing_player")
 
 let all_song_list = []
 
@@ -11,6 +12,7 @@ export let song_name
 export let singing_part
 export let backing_track_file
 export let song_is_chosen = false
+export let backing_audio_playing = false
 
 export const set_up_songs = async () => {
     get_songs().then ( password_correct => {
@@ -83,9 +85,29 @@ singing_part_choose.onchange = function (){
     singing_part = singing_part_choose.value
     if (song_name != "blank" && singing_part != "blank"){
         backing_track_file = audio_base_url + '/' + song_name + '/' + song_name + '_' + singing_part + ".webm"
+        backing_player.setAttribute("src", backing_track_file)
         song_is_chosen = true
     }
     else{
         song_is_chosen = false
     }
 }
+
+backing_player.addEventListener("play", event => {
+    backing_audio_playing = true
+});
+backing_player.addEventListener("pause", event => {
+    backing_audio_playing = false
+});
+backing_player.addEventListener("ended", event => {
+    backing_audio_playing = false
+});
+
+document.addEventListener('play', function(e){
+    var audios = document.getElementsByTagName('audio');
+    for(var i = 0, len = audios.length; i < len;i++){
+        if(audios[i] != e.target){
+            audios[i].pause();
+        }
+    }
+}, true);

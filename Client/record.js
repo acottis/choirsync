@@ -1,5 +1,4 @@
-import * as funcs from "/play_pause_stop.js"
-import {backing_track_file, song_name, singing_part, song_is_chosen} from "/choose_song.js"
+import {backing_track_file, song_name, singing_part, song_is_chosen, backing_audio_playing} from "/choose_song.js"
 import {password_entered} from "/log_in.js"
 
 const button_rec = document.getElementById("button_rec")
@@ -8,9 +7,13 @@ const recordings_area = document.getElementById("recordings_area")
 
 let record_mode = false
 let recordings = []
+let rec_audio_playing = false
 
 const start_recording = () => {
-    if (funcs.audio_playing == false && record_mode == false && song_is_chosen){
+    if (backing_audio_playing || rec_audio_playing){
+        alert("Not started recording, please pause music first")
+    }
+    else if (!record_mode && song_is_chosen){
         record_mode = true
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
@@ -46,7 +49,6 @@ const start_recording = () => {
 
                 mediaRecorder.addEventListener("dataavailable", event => {
                     audioChunks.push(event.data);
-                    //console.log("New Chunk")
                 });
                 
                 button_stop_rec.onclick = stop_recording
@@ -62,17 +64,17 @@ const start_recording = () => {
                     timers["StopTrack"] = new Date();
                     const recording_blob = new Blob(audioChunks);
                     const audioUrl = URL.createObjectURL(recording_blob);
-                    const time_id = new Date(Date.now())
                     const new_recording = {
                         "blob": recording_blob,
-                        "audio": new Audio(audioUrl),
+                        "audiourl": audioUrl,
+                        //"audio": new Audio(audioUrl),
                         "song": song_name,
-                        "time_display": time_id.toUTCString(),
-                        "time_id": time_id
+                        "time": new Date(Date.now())
                     }
                     recordings.push(new_recording)
                     add_recording_to_page(recordings.length-1)
                     //log_times(timers);
+                    button_stop_rec.onclick = null
                     record_mode = false
                 });
 
@@ -83,50 +85,44 @@ const start_recording = () => {
 const add_recording_to_page = (index) => {
 
     const new_recording_div = document.createElement("div")
-    new_recording_div.id = `recording_${recordings[index].time_id}`
+    new_recording_div.id = `recording_${recordings[index].time}`
     
-    const recording_text = document.createTextNode(`Recording of ${song_name} using ${singing_part} from ${recordings[index].time_display} `) 
+    const recording_text = document.createTextNode(`Recording of ${song_name} using ${singing_part} from ${recordings[index].time} `) 
     new_recording_div.appendChild(recording_text)
     new_recording_div.appendChild(document.createElement("br"))
 
-    const button_play_rec = document.createElement("button")
-    button_play_rec.innerHTML = "play recording"
-    button_play_rec.onclick = function(){
-        funcs.play_audio(recordings[index].audio);
-    }
-    button_play_rec.id = `button_play_rec_${recordings[index].time_id}`
-    new_recording_div.appendChild(button_play_rec)
+    const audio_player = document.createElement("audio")
+    audio_player.controls = true
+    audio_player.src = recordings[index].audiourl
+    audio_player.id = `audio_player_${recordings[index].time}`
+    new_recording_div.appendChild(audio_player)
 
-    const button_pause_rec = document.createElement("button")
-    button_pause_rec.innerHTML = "pause recording"
-    button_pause_rec.onclick = function(){
-        funcs.pause_play(recordings[index].audio);
-    }
-    button_pause_rec.id = `button_pause_rec_${recordings[index].time_id}`
-    new_recording_div.appendChild(button_pause_rec)
+    audio_player.addEventListener("play", event => {
+        rec_audio_playing = true
+    });
+    audio_player.addEventListener("pause", event => {
+        rec_audio_playing = false
+    });
+    audio_player.addEventListener("ended", event => {
+        rec_audio_playing = false
+    });
 
-    const button_stop_rec = document.createElement("button")
-    button_stop_rec.innerHTML = "stop/reset recording"
-    button_stop_rec.onclick = function(){
-        funcs.stop_play(recordings[index].audio);
-    }
-    button_stop_rec.id = `button_stop_rec_${recordings[index].time_id}`
-    new_recording_div.appendChild(button_stop_rec)
+    new_recording_div.appendChild(document.createElement("br"))
 
     const button_send_rec = document.createElement("button")
     button_send_rec.innerHTML = "send recording"
     button_send_rec.onclick = function(){
         send_recording(recordings[index].blob);
     }
-    button_send_rec.id = `button_send_rec_${recordings[index].time_id}`
+    button_send_rec.id = `button_send_rec_${recordings[index].time}`
     new_recording_div.appendChild(button_send_rec)
 
     const button_delete_rec = document.createElement("button")
     button_delete_rec.innerHTML = "delete recording"
     button_delete_rec.onclick = function(){
-        delete_recording(recordings[index].time_id);
+        delete_recording(recordings[index].time);
     }
-    button_delete_rec.id = `button_delete_rec_${recordings[index].time_id}`
+    button_delete_rec.id = `button_delete_rec_${recordings[index].time}`
     new_recording_div.appendChild(button_delete_rec)
 
     recordings_area.appendChild(new_recording_div);
@@ -135,23 +131,36 @@ const add_recording_to_page = (index) => {
 const send_recording = (recording_blob) => {
     const singer_name = prompt("What is your name?")
     const singing_part = prompt("What part are you singing?")
-    const message = prompt("message?")
-    const date_id = new Date(Date.now())
+    let message = ""
+    if (confirm("Do you want to add a message?")){
+        message = prompt("Add a message to go with your recording")
+    }
+    const confirm_text = `Hello ${singer_name}, you are about to send your recording of ${song_name}, ${singing_part} part`
+    if (confirm(confirm_text)){
+        const date_id = new Date(Date.now())
 
-    const fd = new FormData();
-    fd.append('recording', recording_blob, `${song_name}_${singer_name}_${singing_part}_${date_id.toISOString()}.webm`)
-    fd.append('singer_name', singer_name)
-    fd.append('message', message)
-    fd.append('password', password_entered)
+        const fd = new FormData();
+        fd.append('recording', recording_blob, `${song_name}_${singer_name}_${singing_part}_${date_id.toISOString()}.webm`)
+        fd.append('singer_name', singer_name)
+        fd.append('message', message)
+        fd.append('password', password_entered)
 
-    fetch(`/api/v0/recording`, {
-        method: "post",
-        body: fd
-    })
-    .then( res => res.json() )
-    .then ( json_response => {
-        console.log(json_response.message)
-    });
+        fetch(`/api/v0/recording`, {
+            method: "post",
+            body: fd
+        })
+        .then( res => res.json() )
+        .then ( json_response => {
+            console.log(json_response)
+            if (json_response.status == "success"){
+                alert(`Recording received, thank you ${singer_name}!`)
+            }
+            else{
+                alert(`Sorry, there was an error: "${json_response.message}"`)
+            }
+
+        });
+    }
 }
 
 const delete_recording = (id) => {

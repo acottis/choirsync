@@ -23,11 +23,6 @@ const show_page = async () => {
             maindiv.style.display = "block"
             set_up_songs()
         }
-        //remove this
-        else if (password_entered == "letmeinanyway") {
-            startdiv.style.display = "none"
-            maindiv.style.display = "block"
-        }
     })
 }
 

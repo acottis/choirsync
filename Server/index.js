@@ -59,13 +59,13 @@ app.post('/api/v0/recording', (req, res) => {
             if (err instanceof multer.MulterError) {
                 console.log(err)
                 res.json({
-                    status: "error",
+                    status: "failure",
                     message: "Multer Error, check server logs"
                 })
             } else if (err) {
                 console.log(err)
                 res.json({
-                    status: "error",
+                    status: "failure",
                     message: "Non Multer Error, check server logs"
                 })
             } else {
@@ -81,12 +81,16 @@ app.post('/api/v0/recording', (req, res) => {
 
                     // Send recording to discord
                     discord_webhook(req);
+                    res.json({
+                        status: "success",
+                        message: "Sent recording"
+                    })
 
                 }
                 catch (err) {
                     res.json({
                         status: "failure",
-                        message: "Recording could not be processed"
+                        message: "Webhook error"
                     })
                     console.log(err)
                 }
@@ -113,16 +117,21 @@ const discord_webhook = (req) => {
     fd.append("file", audio, {
         filename: req.file.originalname
     })
-    fd.append("content", `${req.body.singer_name} said: "${req.body.message}"`)
+    if (req.body.message == "") {
+        fd.append("content", `${req.body.singer_name} didn't add a comment`)
+    }
+    else{
+        fd.append("content", `${req.body.singer_name} said: "${req.body.message}"`)
+    }
 
     fetch(`https://discord.com/api/webhooks/${process.env.DISCORD_ENDPOINT}`,
         {
             method: "POST",
             body: fd,
         })
-        .then(res => {
-            console.log(res.status)
-        })
+        // .then(res => {
+        //     console.log(res.status)
+        // })
 }
 
 
@@ -157,6 +166,5 @@ async function listFiles() {
         })
     })
 
-    //console.log(songs)
     return songs
 }
