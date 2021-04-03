@@ -69,11 +69,12 @@ const start_recording = () => {
                         "audiourl": audioUrl,
                         //"audio": new Audio(audioUrl),
                         "song": song_name,
+                        "part": singing_part,
                         "time": new Date(Date.now())
                     }
                     recordings.push(new_recording)
                     add_recording_to_page(recordings.length-1)
-                    //log_times(timers);
+                    log_times(timers);
                     button_stop_rec.onclick = null
                     record_mode = false
                 });
@@ -87,7 +88,7 @@ const add_recording_to_page = (index) => {
     const new_recording_div = document.createElement("div")
     new_recording_div.id = `recording_${recordings[index].time}`
     
-    const recording_text = document.createTextNode(`Recording of ${song_name} using ${singing_part} from ${recordings[index].time} `) 
+    const recording_text = document.createTextNode(`Recording of ${recordings[index].song} using ${recordings[index].part} from ${recordings[index].time} `) 
     new_recording_div.appendChild(recording_text)
     new_recording_div.appendChild(document.createElement("br"))
 
@@ -112,7 +113,7 @@ const add_recording_to_page = (index) => {
     const button_send_rec = document.createElement("button")
     button_send_rec.innerHTML = "send recording"
     button_send_rec.onclick = function(){
-        send_recording(recordings[index].blob);
+        send_recording(recordings[index]);
     }
     button_send_rec.id = `button_send_rec_${recordings[index].time}`
     new_recording_div.appendChild(button_send_rec)
@@ -128,7 +129,8 @@ const add_recording_to_page = (index) => {
     recordings_area.appendChild(new_recording_div);
 }
 
-const send_recording = (recording_blob) => {
+const send_recording = (recording) => {
+    const song_name = recording.song
     const singer_name = prompt("What is your name?")
     const singing_part = prompt("What part are you singing?")
     let message = ""
@@ -140,7 +142,7 @@ const send_recording = (recording_blob) => {
         const date_id = new Date(Date.now())
 
         const fd = new FormData();
-        fd.append('recording', recording_blob, `${song_name}_${singer_name}_${singing_part}_${date_id.toISOString()}.webm`)
+        fd.append('recording', recording.blob, `${song_name}_${singer_name}_${singing_part}_${date_id.toISOString()}.webm`)
         fd.append('singer_name', singer_name)
         fd.append('message', message)
         fd.append('password', password_entered)
