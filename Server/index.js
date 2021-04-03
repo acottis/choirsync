@@ -13,6 +13,7 @@ const upload = multer({ storage: storage }).single('recording')
 
 
 const app = express()
+app.use(express.json())
 const port = process.env.PORT || 8080
 
 
@@ -20,45 +21,45 @@ app.post('/api/v0/recording', (req, res) => {
     upload(req, res, (err) => { 
         
         if (err instanceof multer.MulterError) {
+            console.log(err)
             res.json({
                 status: "error",
                 message: "Multer Error, check server logs"
             })
-            console.log(err)
         } else if (err) {
             console.log(err)
             res.json({
                 status: "error",
                 message: "Non Multer Error, check server logs"
             })
-        }
-        try {
-            // Write file to temp folder
-            // fs.writeFile(`./${Date.now()}-${req.file.originalname}`, req.file.buffer, (err) => {
-            //     if (err) throw err;
-            //     console.log
-            // })
+        } else {
+            try {
+                // Write file to temp folder
+                // fs.writeFile(`./${Date.now()}-${req.file.originalname}`, req.file.buffer, (err) => {
+                //     if (err) throw err;
+                //     console.log
+                // })
 
-            // Save a recording to DB
-            //db.store_recording(`${req.file.originalname}`, req.file.buffer, new Date().toISOString())
+                // Save a recording to DB
+                //db.store_recording(`${req.file.originalname}`, req.file.buffer, new Date().toISOString())
 
-            // Send recording to discord
-            discord_webhook(req);
+                // Send recording to discord
+                discord_webhook(req);
 
-            res.json({
-                file: req.file.originalname,
-                status: "success",
-                message: `${req.file.originalname} has been recieved by the server`
-            })            
-            
-        }
-        catch(err){
-            res.json({
-                file: req.file.originalname,
-                status: "failure",
-                message: `${req.file.originalname} could not be processed`
-            })
-            console.log(err)
+                res.json({
+                    file: req.file.originalname,
+                    status: "success",
+                    message: `${req.file.originalname} has been recieved by the server`
+                })            
+                
+            }
+            catch(err){
+                res.json({
+                    status: "failure",
+                    message: "Recording could not be processed"
+                })
+                console.log(err)
+            }
         }
     })
 
@@ -76,7 +77,7 @@ const discord_webhook = (req) => {
     fd.append("file", audio, {
         filename: req.file.originalname
     })
-    fd.append("content", `Recieved ${req.file.originalname} from ${req.ip}`)
+    fd.append("content", `Recieved ${req.file.originalname} from ${req.ip} and Naomi said ${req.body.message}`)
 
     fetch(`https://discord.com/api/webhooks/${process.env.DISCORD_ENDPOINT}`,
     {
