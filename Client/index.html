@@ -1,5 +1,9 @@
 <div id = "welcome">
-    <button type="button" id="button_authenticate">log in</button>
+    <form id="form_authenticate">
+        <input type="text" id = "password_entered">
+        <br>
+        <input type="submit" id="button_authenticate" isdefault="true" value ="log in">
+    </form>
 </div>
 
 <div id="requires_password">
@@ -20,4 +24,9 @@
     <button type="button" id="button_send_rec">send recording</button>
 </div>
 
-<script src="index.js"></script>
+<!-- <script src="index.js"></script> -->
+<script src="log_in.js"></script>
+<script type="module" src="choose_song.js"></script>
+<script type="module" src="play_backing.js"></script>
+<script type="module" src="record.js"></script>
+<script type="module" src="play_pause_stop.js"></script>

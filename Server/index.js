@@ -8,6 +8,8 @@ const db = require('./mongodb')
 const FormData = require('form-data');
 const { Readable } = require('stream');
 
+const password_required = "hello"
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single('recording')
 
@@ -16,9 +18,23 @@ const app = express()
 app.use(express.json())
 const port = process.env.PORT || 8080
 
+app.post('/api/v0/authenticate', (req, res) => {
+    if (req.body.password == password_required){
+        res.json({
+            status: "success",
+            message: "Correct password"
+        })
+    }
+    else{
+        res.json({
+            status: "failure",
+            message: "Wrong password"
+        })
+    }
+})
 
 app.post('/api/v0/recording', (req, res) => {
-    upload(req, res, (err) => { 
+    upload(req, res, async (err) => { 
         
         if (err instanceof multer.MulterError) {
             console.log(err)
@@ -44,13 +60,21 @@ app.post('/api/v0/recording', (req, res) => {
                 //db.store_recording(`${req.file.originalname}`, req.file.buffer, new Date().toISOString())
 
                 // Send recording to discord
-                discord_webhook(req);
-
-                res.json({
-                    file: req.file.originalname,
-                    status: "success",
-                    message: `${req.file.originalname} has been recieved by the server`
-                })            
+                discord_webhook(req).then (webhook_response => {
+                    if (webhook_response == "success") {
+                        res.json({
+                            file: req.file.originalname,
+                            status: "success",
+                            message: `${req.file.originalname} has been recieved by the server`
+                        })
+                    }
+                    else{
+                        res.json({
+                            status: "failure",
+                            message: "Wrong password"
+                        })
+                    }
+                })          
                 
             }
             catch(err){
@@ -62,30 +86,36 @@ app.post('/api/v0/recording', (req, res) => {
             }
         }
     })
-
 })
 
 const discord_webhook = (req) => {
+    return new Promise (resolve => {
+        if (req.body.password == password_required){
+            console.log(`Recieved ${req.file.originalname} from ${req.ip}`)
+            const audio = Readable.from(req.file.buffer, {
+                highWaterMark: 1024
+            })
+            //const file = fs.createReadStream('test.webm')
 
-    console.log(`Recieved ${req.file.originalname} from ${req.ip}`)
-    const audio = Readable.from(req.file.buffer, {
-        highWaterMark: 1024
-    })
-    //const file = fs.createReadStream('test.webm')
+            const fd = new FormData()
+            fd.append("file", audio, {
+                filename: req.file.originalname
+            })
+            fd.append("content", `Recieved ${req.file.originalname} from ${req.ip} and Naomi said ${req.body.message}`)
 
-    const fd = new FormData()
-    fd.append("file", audio, {
-        filename: req.file.originalname
-    })
-    fd.append("content", `Recieved ${req.file.originalname} from ${req.ip} and Naomi said ${req.body.message}`)
-
-    fetch(`https://discord.com/api/webhooks/${process.env.DISCORD_ENDPOINT}`,
-    {
-        method: "POST",
-        body: fd,
-    })
-    .then( res => {
-        console.log(res.status)
+            fetch(`https://discord.com/api/webhooks/${process.env.DISCORD_ENDPOINT}`,
+            {
+                method: "POST",
+                body: fd,
+            })
+            .then( res => {
+                resolve("success")
+                console.log(res.status)
+            })
+        }
+        else{
+            resolve("wrong password")
+        }
     })
 }
 

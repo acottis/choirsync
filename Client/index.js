@@ -2,7 +2,9 @@ const startdiv = document.getElementById("welcome")
 const maindiv = document.getElementById("requires_password")
 maindiv.style.display = "none"
 
-const button_authenticate = document.getElementById("button_authenticate")
+const password_entered = document.getElementById("password_entered")
+const form_authenticate = document.getElementById("form_authenticate")
+
 const button_play = document.getElementById("button_play")
 const button_pause_play = document.getElementById("button_pause_play")
 const button_stop_play = document.getElementById("button_stop_play")
@@ -13,9 +15,44 @@ const button_pause_play_rec = document.getElementById("button_pause_play_rec")
 const button_stop_play_rec = document.getElementById("button_stop_play_rec")
 const button_send_rec = document.getElementById("button_send_rec")
 
+const log_in = () => {
+    show_page()
+    //stop page refresh on form submit
+    return false
+}
+
+const show_page = async () => {
+    authenticate().then ( password_correct => {
+        if (password_correct) {
+            startdiv.style.display = "none"
+            maindiv.style.display = "block"
+        }
+    })
+}
+
 const authenticate = () => {
-    startdiv.style.display = "none"
-    maindiv.style.display = "block"
+    return new Promise (resolve =>{
+        const password_send = {password: password_entered.value}
+
+        fetch(`/api/v0/authenticate`, {
+            method: "post",
+            headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(password_send)
+        })
+        .then( res => res.json() )
+        .then(json_response => {
+            if (json_response.status == "success"){
+                resolve(true)
+            }
+            else {
+                alert("Sorry, the password is not correct")
+                resolve(false)
+            }
+        })
+    })
 }
 
 const audio_base_url = 'https://storage.googleapis.com/choirsync.appspot.com/static/audio'
@@ -24,6 +61,7 @@ const singing_part = "Tenor Short"
 const backing_track_file = audio_base_url + '/' + song_name + '/' + song_name + '_' + singing_part + ".webm"
 
 let recording_audio
+let recording_blob
 let recording_ready = false
 
 const backing_track_play = new Audio(backing_track_file);
@@ -124,7 +162,7 @@ const start_recording = () => {
                     stream.getTracks()
                         .forEach(track => track.stop())
                     timers["StopTrack"] = new Date();
-                    const recording_blob = new Blob(audioChunks);
+                    recording_blob = new Blob(audioChunks);
                     const audioUrl = URL.createObjectURL(recording_blob);
                     recording_audio = new Audio(audioUrl);
                     recording_ready = true
@@ -151,6 +189,7 @@ const send_recording = () => {
         const fd = new FormData();
         fd.append('recording', recording_blob, "recording.webm")
         fd.append('message', "i like you adam")
+        fd.append('password', password_entered.value)
 
         fetch(`/api/v0/recording`, {
             method: "post",
@@ -161,7 +200,7 @@ const send_recording = () => {
     }
 }
 
-button_authenticate.onclick = authenticate
+form_authenticate.onsubmit = log_in
 button_play.onclick = function(){
     play_audio(backing_track_play)
 }
