@@ -102,7 +102,6 @@ const send_recording = () => {
     }
 }
 
-
 button_rec.onclick = start_recording
 button_play_rec.onclick = function(){
     if (recording_ready){
