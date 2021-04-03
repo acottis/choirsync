@@ -67,7 +67,6 @@ const start_recording = () => {
                     const new_recording = {
                         "blob": recording_blob,
                         "audiourl": audioUrl,
-                        //"audio": new Audio(audioUrl),
                         "song": song_name,
                         "part": singing_part,
                         "time": new Date(Date.now())
@@ -130,39 +129,61 @@ const add_recording_to_page = (index) => {
 }
 
 const send_recording = (recording) => {
-    const singer_name = prompt("What is your name?")
-    const send_song_name = recording.song
-    const send_singing_part = prompt("What part are you singing?")
+
+    let response_text = "cancelled"
     let message = ""
-    if (confirm("Do you want to add a message?")){
-        message = prompt("Add a message to go with your recording")
-    }
-    const confirm_text = `Hello ${singer_name}, you are about to send your recording of ${send_song_name}, ${send_singing_part} part`
-    if (confirm(confirm_text)){
-        const date_id = new Date(Date.now())
-
-        const fd = new FormData();
-        fd.append('recording', recording.blob, `${send_song_name}_${singer_name}_${send_singing_part}_${date_id.toISOString()}.webm`)
-        fd.append('singer_name', singer_name)
-        fd.append('message', message)
-        fd.append('password', password_entered)
-
-        fetch(`/api/v0/recording`, {
-            method: "post",
-            body: fd
-        })
-        .then( res => res.json() )
-        .then ( json_response => {
-            console.log(json_response)
-            if (json_response.status == "success"){
-                alert(`Recording received, thank you ${singer_name}!`)
+    let send_song_name
+    let send_singing_part
+    let singer_name = prompt("What is your name?")
+    if (singer_name != "" && singer_name != null){
+        send_song_name = recording.song
+        send_singing_part = prompt("What part are you singing?")
+        if (send_singing_part != "" && send_singing_part != null){
+            if (confirm("Do you want to add a message?")){
+                message = prompt("Add a message to go with your recording")
             }
-            else{
-                alert(`Sorry, there was an error: "${json_response.message}"`)
-            }
-
-        });
+            response_text = `Hello ${singer_name}, you are about to send your recording of ${send_song_name}, ${send_singing_part} part`
+        }
     }
+
+    if (response_text != "cancelled"){
+        if (confirm(response_text)){
+            console.log("hello")
+            const date_id = new Date(Date.now())
+
+            const fd = new FormData();
+            fd.append('recording', recording.blob, `${send_song_name}_${singer_name}_${send_singing_part}_${date_id.toISOString()}.webm`)
+            fd.append('singer_name', singer_name)
+            fd.append('message', message)
+            fd.append('password', password_entered)
+
+            fetch(`/api/v0/recording`, {
+                method: "post",
+                body: fd
+            })
+            .then( res => res.json() )
+            .then ( json_response => {
+                console.log(json_response)
+                if (json_response.status == "success"){
+                    alert(`Recording received, thank you ${singer_name}!`)
+                }
+                else{
+                    alert(`Sorry, there was an error: "${json_response.message}"`)
+                }
+
+            });
+        }
+        else{
+            alert("Recording not sent")
+        }
+    }
+    else{
+        alert("Recording not sent")
+    }
+}
+
+const yucky_prompts = (song) => {
+    return [response_text, message]
 }
 
 const delete_recording = (id) => {
