@@ -35,9 +35,9 @@ app.post('/api/v0/authenticate', (req, res) => {
 })
 
 app.post('/api/v0/recording', (req, res) => {
+    // Multer handles the formData
     upload(req, res, async (err) => {
         if (req.body.password == password_required) {
-            console.log(req.body)
             if (err instanceof multer.MulterError) {
                 console.log(err)
                 res.json({
