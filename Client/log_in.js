@@ -1,3 +1,5 @@
+import {change_song_names} from "/choose_song.js"
+
 const startdiv = document.getElementById("welcome")
 const maindiv = document.getElementById("requires_password")
 maindiv.style.display = "none"
@@ -16,6 +18,7 @@ const show_page = async () => {
         if (password_correct) {
             startdiv.style.display = "none"
             maindiv.style.display = "block"
+            change_song_names()
         }
         //remove this
         else if (password_entered.value == "letmeinanyway") {
