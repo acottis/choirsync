@@ -4,20 +4,34 @@ const fetch = require('node-fetch');
 const express = require('express')
 const multer = require('multer')
 const fs = require('fs')
-const db = require('./mongodb')
+// const db = require('./mongodb')
 const FormData = require('form-data');
 const { Readable } = require('stream');
-const { equal } = require('assert');
+const { Storage } = require('@google-cloud/storage');
+const { delimiter } = require('path');
 
 const password_required = "hello"
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage }).single('recording')
+const upload = multer({ storage: multer.memoryStorage() }).single('recording')
 
+
+const gstorage = new Storage();
 
 const app = express()
 app.use(express.json())
 const port = process.env.PORT || 8080
+
+app.post('/api/v0/files', (req, res) => {
+    if (req.body.password == password_required) {
+
+        const songs = listFiles()
+        res.send(songs)
+    }
+    res.json({
+        status: "failure",
+        message: "Wrong password, how did you get in?"
+    })
+})
 
 app.post('/api/v0/authenticate', (req, res) => {
     if (req.body.password == password_required) {
@@ -74,7 +88,7 @@ app.post('/api/v0/recording', (req, res) => {
                 }
             }
         }
-        else{
+        else {
             res.json({
                 status: "failure",
                 message: "Wrong password, how did you get in?"
@@ -98,13 +112,13 @@ const discord_webhook = (req) => {
     fd.append("content", `${req.body.singer_name} said: "${req.body.message}"`)
 
     fetch(`https://discord.com/api/webhooks/${process.env.DISCORD_ENDPOINT}`,
-    {
-        method: "POST",
-        body: fd,
-    })
-    .then( res => {
-        console.log(res.status)
-    })
+        {
+            method: "POST",
+            body: fd,
+        })
+        .then(res => {
+            console.log(res.status)
+        })
 }
 
 
@@ -113,3 +127,32 @@ app.use('/', express.static('Client'))
 app.listen(port, () => {
     console.log(`Listening on port: ${port}`);
 });
+
+
+async function listFiles() {
+    // Lists files in the bucket
+    const [files] = await gstorage.bucket("choirsync.appspot.com").getFiles()
+
+    const songs = []
+
+    files.forEach((file, i) => {
+        if (file.name.slice(-5) != ".webm") {
+            delete files[i]
+        }
+    })
+
+
+    files.forEach(file => {
+        let split_path = file.name.split("/")
+        let song = split_path[split_path.length-1]
+        let part = song.split("_")[1]
+        let folder = split_path[split_path.length-2]
+        songs.push({
+            song :folder,
+            part: part
+        })
+    })
+
+    //console.log(songs)
+    return songs
+}
