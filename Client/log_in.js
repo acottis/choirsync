@@ -49,8 +49,9 @@ const authenticate = (password_passed) => {
 }
 
 form_authenticate.addEventListener("submit", event  => {
+    log_in()
+
     //stop page refresh on form submit
     event.preventDefault();
-    log_in()
     return false
-}, {passive:false})
+})
