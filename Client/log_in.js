@@ -11,8 +11,6 @@ const form_authenticate = document.getElementById("form_authenticate")
 const log_in = () => {
     password_entered = password_element.value
     show_page()
-    //stop page refresh on form submit
-    return false
 }
 
 const show_page = async () => {
@@ -50,4 +48,10 @@ const authenticate = (password_passed) => {
     })
 }
 
-form_authenticate.onsubmit = log_in
+form_authenticate.addEventListener("submit", event => {
+    log_in()
+
+    //stop page refresh on form submit
+    event.preventDefault();
+    return false
+})
