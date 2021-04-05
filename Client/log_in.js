@@ -2,7 +2,6 @@ import {set_up_songs} from "/choose_song.js"
 
 const startdiv = document.getElementById("welcome")
 const maindiv = document.getElementById("requires_password")
-maindiv.style.display = "none"
 
 const password_element = document.getElementById("password_entered")
 export let password_entered

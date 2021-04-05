@@ -24,6 +24,8 @@ const start_recording = () => {
                     mimeType: 'audio/webm'
                 });
 
+                button_rec.className="rec_button"
+
                 timers["AudioLoad"] = new Date();
                 const backing_track = new Audio(backing_track_file);
                 timers["AudioLoaded"] = new Date();
@@ -59,6 +61,10 @@ const start_recording = () => {
                 });
 
                 mediaRecorder.addEventListener("stop", () => {
+                    finish_off()
+                });
+
+                const finish_off = () =>{
                     stream.getTracks()
                         .forEach(track => track.stop())
                     timers["StopTrack"] = new Date();
@@ -73,10 +79,11 @@ const start_recording = () => {
                     }
                     recordings.push(new_recording)
                     add_recording_to_page(recordings.length-1)
-                    log_times(timers);
+                    //log_times(timers);
+                    button_rec.className="big_button"
                     button_stop_rec.onclick = null
                     record_mode = false
-                });
+                }
 
             });
     }
@@ -85,11 +92,20 @@ const start_recording = () => {
 const add_recording_to_page = (index) => {
 
     const new_recording_div = document.createElement("div")
+    new_recording_div.className = "recording"
     new_recording_div.id = `recording_${recordings[index].time}`
     
-    const recording_text = document.createTextNode(`Recording of ${recordings[index].song} using ${recordings[index].part} part from ${recordings[index].time} `) 
-    new_recording_div.appendChild(recording_text)
-    new_recording_div.appendChild(document.createElement("br"))
+    const recording_name_p = document.createElement("p")
+    recording_name_p.className="recording_name"
+    const recording_text = document.createTextNode(`Recording of ${recordings[index].song} using ${recordings[index].part} part`)
+    recording_name_p.appendChild(recording_text)
+    new_recording_div.appendChild(recording_name_p)
+    
+    const recording_time_p = document.createElement("p")
+    recording_time_p.className="recording_time"
+    const time_text = document.createTextNode(recordings[index].time)
+    recording_time_p.appendChild(time_text)
+    new_recording_div.appendChild(recording_time_p)
 
     const audio_player = document.createElement("audio")
     audio_player.controls = true
