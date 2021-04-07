@@ -46,7 +46,7 @@ const start_recording = () => {
 
                 backing_track.addEventListener("canplaythrough", event => {
                     timers["CanplayListener"] = new Date();
-                    start_recording()
+                    setTimeout(() => start_recording() , 200)
                 })
 
                 mediaRecorder.addEventListener("dataavailable", event => {
