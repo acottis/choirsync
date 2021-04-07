@@ -6,7 +6,6 @@ const button_stop_rec = document.getElementById("button_stop_rec")
 const recordings_area = document.getElementById("recordings_area")
 
 let record_mode = false
-let stop_loop
 let recordings = []
 let rec_audio_playing = false
 
@@ -16,7 +15,6 @@ const start_recording = () => {
     }
     else if (!record_mode && song_is_chosen){
         record_mode = true
-        stop_loop = false
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
 
@@ -35,13 +33,6 @@ const start_recording = () => {
                 const start_recording = () =>{
                     backing_track.play();
                     timers["PlayStarted"] = new Date();
-                    setTimeout(() => actually_start_recording(), 200);
-                }
-
-                const actually_start_recording = () =>{
-                    stop_loop=true
-                    backing_track.currentTime = 0;
-                    timers["TimeTo0"] = new Date();
                     mediaRecorder.start();
                     timers["RecordStarted"] = new Date();
                 }
