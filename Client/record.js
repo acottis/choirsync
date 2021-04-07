@@ -6,6 +6,7 @@ const button_stop_rec = document.getElementById("button_stop_rec")
 const recordings_area = document.getElementById("recordings_area")
 
 let record_mode = false
+let stop_loop
 let recordings = []
 let rec_audio_playing = false
 
@@ -15,6 +16,7 @@ const start_recording = () => {
     }
     else if (!record_mode && song_is_chosen){
         record_mode = true
+        stop_loop = false
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
 
@@ -30,28 +32,32 @@ const start_recording = () => {
                 const backing_track = new Audio(backing_track_file);
                 timers["AudioLoaded"] = new Date();
 
-                const play_bt = () => { backing_track.play(); return new Promise(resolve => {resolve(true)}); }
-                const pause_bt = () => { backing_track.pause(); return new Promise(resolve => {resolve(true)}); }
-                const start_mr = () => { mediaRecorder.start(); return new Promise(resolve => {resolve(true)}); }
-                const stop_mr = () => { mediaRecorder.stop(); return new Promise(resolve => {resolve(true)}); }
-
                 const start_recording = () =>{
-                    play_bt()
-                    .then(() => {timers["PlayStarted"] = new Date();})
-                    start_mr()
-                    .then(() => {timers["RecordStarted"] = new Date();})
+                    backing_track.play();
+                    timers["PlayStarted"] = new Date();
+                    setTimeout(() => actually_start_recording(), 200);
+                }
+
+                const actually_start_recording = () =>{
+                    stop_loop=true
+                    backing_track.currentTime = 0;
+                    timers["TimeTo0"] = new Date();
+                    mediaRecorder.start();
+                    timers["RecordStarted"] = new Date();
                 }
 
                 const stop_recording = () =>{
-                    stop_mr()
-                    .then(() => {timers["RecordPaused"] = new Date();})
-                    pause_bt()
-                    .then(() => {timers["AudioPaused"] = new Date();})
+                    mediaRecorder.stop();
+                    timers["RecordPaused"] = new Date();
+                    backing_track.pause();
+                    timers["AudioPaused"] = new Date();
                 }
 
                 backing_track.addEventListener("canplaythrough", event => {
-                    timers["CanplayListener"] = new Date();
-                    start_recording()
+                    if (!stop_loop){
+                        timers["CanplayListener"] = new Date();
+                        start_recording()
+                    }
                 })
 
                 mediaRecorder.addEventListener("dataavailable", event => {
@@ -63,7 +69,6 @@ const start_recording = () => {
                 backing_track.addEventListener("ended", event => {
                     timers["EndedListener"] = new Date();
                     stop_recording()
-                    .then(()=> timers["StopTrack"] = new Date())
                 });
 
                 mediaRecorder.addEventListener("stop", () => {
@@ -73,6 +78,7 @@ const start_recording = () => {
                 const finish_off = () =>{
                     stream.getTracks()
                         .forEach(track => track.stop())
+                    timers["StopTrack"] = new Date();
                     const recording_blob = new Blob(audioChunks);
                     const audioUrl = URL.createObjectURL(recording_blob);
                     const new_recording = {
