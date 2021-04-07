@@ -1,4 +1,4 @@
-import {backing_track_file, song_name, singing_part, song_is_chosen, backing_audio_playing} from "/choose_song.js"
+import {backing_track_file, song_name, singing_part, song_is_chosen, backing_audio_playing, mimetype_chosen} from "/choose_song.js"
 import {password_entered} from "/log_in.js"
 
 const button_rec = document.getElementById("button_rec")
@@ -21,7 +21,7 @@ const start_recording = () => {
                 const timers = {};
                 const audioChunks = [];
                 const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'audio/webm'
+                    mimeType: mimetype_chosen
                 });
 
                 button_rec.className="rec_button"
@@ -167,7 +167,7 @@ const send_recording = (recording) => {
             const date_id = new Date(Date.now())
 
             const fd = new FormData();
-            fd.append('recording', recording.blob, `${send_song_name}_${singer_name}_${send_singing_part}_${date_id.toISOString()}.webm`)
+            fd.append('recording', recording.blob, `${send_song_name}_${singer_name}_${send_singing_part}_${date_id.toISOString()}.mp3`)
             fd.append('singer_name', singer_name)
             fd.append('message', message)
             fd.append('password', password_entered)

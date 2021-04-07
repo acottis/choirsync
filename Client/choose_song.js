@@ -13,6 +13,7 @@ export let singing_part
 export let backing_track_file
 export let song_is_chosen = false
 export let backing_audio_playing = false
+export let mimetype_chosen
 
 export const set_up_songs = async () => {
     get_songs().then ( password_correct => {
@@ -20,7 +21,15 @@ export const set_up_songs = async () => {
             change_song_names()
         }
     })
+    
+    if(MediaRecorder.isTypeSupported("audio/webm")){
+        mimetype_chosen = "audio/webm"
+    }
+    else {
+        mimetype_chosen = "audio/mpeg"
+    }
 }
+
 const change_song_names = () => {
     let song_list = []
     all_song_list.forEach(track => {
@@ -84,7 +93,7 @@ song_name_choose.onchange = function (){
 singing_part_choose.onchange = function (){
     singing_part = singing_part_choose.value
     if (song_name != "blank" && singing_part != "blank"){
-        backing_track_file = audio_base_url + '/' + song_name + '/' + song_name + '_' + singing_part + ".webm"
+        backing_track_file = audio_base_url + '/' + song_name + '/' + song_name + '_' + singing_part + ".mp3"
         backing_player.setAttribute("src", backing_track_file)
         song_is_chosen = true
     }

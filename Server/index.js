@@ -111,7 +111,6 @@ const discord_webhook = (req) => {
     const audio = Readable.from(req.file.buffer, {
         highWaterMark: 1024
     })
-    //const file = fs.createReadStream('test.webm')
 
     const fd = new FormData()
     fd.append("file", audio, {
@@ -149,7 +148,7 @@ async function listFiles() {
     const songs = []
 
     files.forEach((file, i) => {
-        if (file.name.slice(-5) != ".webm") {
+        if (file.name.slice(-4) != ".mp3") {
             delete files[i]
         }
     })
@@ -158,7 +157,7 @@ async function listFiles() {
     files.forEach(file => {
         let split_path = file.name.split("/")
         let song = split_path[split_path.length - 1]
-        let part = song.split("_")[1].replace(".webm","")
+        let part = song.split("_")[1].replace(".mp3","")
         let folder = split_path[split_path.length - 2]
         songs.push({
             song: folder,
