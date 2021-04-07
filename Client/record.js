@@ -30,23 +30,28 @@ const start_recording = () => {
                 const backing_track = new Audio(backing_track_file);
                 timers["AudioLoaded"] = new Date();
 
+                const play_bt = () => { backing_track.play(); return new Promise(resolve => {resolve(true)}); }
+                const pause_bt = () => { backing_track.pause(); return new Promise(resolve => {resolve(true)}); }
+                const start_mr = () => { mediaRecorder.start(); return new Promise(resolve => {resolve(true)}); }
+                const stop_mr = () => { mediaRecorder.stop(); return new Promise(resolve => {resolve(true)}); }
+
                 const start_recording = () =>{
-                    backing_track.play();
-                    timers["PlayStarted"] = new Date();
-                    mediaRecorder.start();
-                    timers["RecordStarted"] = new Date();
+                    play_bt()
+                    .then(() => {timers["PlayStarted"] = new Date();})
+                    start_mr()
+                    .then(() => {timers["RecordStarted"] = new Date();})
                 }
 
                 const stop_recording = () =>{
-                    mediaRecorder.stop();
-                    timers["RecordPaused"] = new Date();
-                    backing_track.pause();
-                    timers["AudioPaused"] = new Date();
+                    stop_mr()
+                    .then(() => {timers["RecordPaused"] = new Date();})
+                    pause_bt()
+                    .then(() => {timers["AudioPaused"] = new Date();})
                 }
 
                 backing_track.addEventListener("canplaythrough", event => {
                     timers["CanplayListener"] = new Date();
-                    setTimeout(() => start_recording() , 200)
+                    start_recording()
                 })
 
                 mediaRecorder.addEventListener("dataavailable", event => {
@@ -58,6 +63,7 @@ const start_recording = () => {
                 backing_track.addEventListener("ended", event => {
                     timers["EndedListener"] = new Date();
                     stop_recording()
+                    .then(()=> timers["StopTrack"] = new Date())
                 });
 
                 mediaRecorder.addEventListener("stop", () => {
@@ -67,7 +73,6 @@ const start_recording = () => {
                 const finish_off = () =>{
                     stream.getTracks()
                         .forEach(track => track.stop())
-                    timers["StopTrack"] = new Date();
                     const recording_blob = new Blob(audioChunks);
                     const audioUrl = URL.createObjectURL(recording_blob);
                     const new_recording = {
