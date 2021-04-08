@@ -15,6 +15,7 @@ const start_recording = () => {
     }
     else if (!record_mode && song_is_chosen){
         record_mode = true
+        button_rec.className="rec_button"
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
 
@@ -23,8 +24,6 @@ const start_recording = () => {
                 const mediaRecorder = new MediaRecorder(stream, {
                     mimeType: mimetype_chosen
                 });
-
-                button_rec.className="rec_button"
 
                 timers["AudioLoad"] = new Date();
                 const backing_track = new Audio(backing_track_file);
@@ -45,10 +44,8 @@ const start_recording = () => {
                 }
 
                 backing_track.addEventListener("canplaythrough", event => {
-                    if (!stop_loop){
-                        timers["CanplayListener"] = new Date();
-                        start_recording()
-                    }
+                    timers["CanplayListener"] = new Date();
+                    start_recording()
                 })
 
                 mediaRecorder.addEventListener("dataavailable", event => {

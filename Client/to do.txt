@@ -2,7 +2,3 @@
 something to see timer while recording?
 
 remove In Dulci and short tenor
-
-change to mp3 and make sure it still works...
-
-add info on login page for if nothing is working
