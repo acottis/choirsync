@@ -9,7 +9,7 @@ const FormData = require('form-data');
 const { Readable } = require('stream');
 const { Storage } = require('@google-cloud/storage');
 
-const password_required = "logie-kirk-hall"
+const password_required = process.env.TURINGTEST
 
 const upload = multer({ storage: multer.memoryStorage() }).single('recording')
 
