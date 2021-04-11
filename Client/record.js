@@ -78,7 +78,7 @@ const start_recording = () => {
                     }
                     recordings.push(new_recording)
                     add_recording_to_page(recordings.length-1)
-                    log_times(timers);
+                    //log_times(timers);
                     button_rec.className="big_button"
                     button_stop_rec.onclick = null
                     record_mode = false
