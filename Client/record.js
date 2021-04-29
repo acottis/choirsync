@@ -125,7 +125,7 @@ const add_recording_to_page = (index) => {
     new_recording_div.appendChild(document.createElement("br"))
 
     const button_send_rec = document.createElement("button")
-    button_send_rec.innerHTML = "send recording"
+    button_send_rec.innerHTML = "Send recording"
     button_send_rec.onclick = function(){
         send_recording(recordings[index]);
     }
@@ -133,7 +133,7 @@ const add_recording_to_page = (index) => {
     new_recording_div.appendChild(button_send_rec)
 
     const button_delete_rec = document.createElement("button")
-    button_delete_rec.innerHTML = "delete recording"
+    button_delete_rec.innerHTML = "Delete recording"
     button_delete_rec.onclick = function(){
         delete_recording(recordings[index].time);
     }
