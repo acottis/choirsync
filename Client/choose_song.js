@@ -5,8 +5,11 @@ const audio_base_url = 'https://storage.googleapis.com/choirsync.appspot.com/sta
 const song_name_choose = document.getElementById("choose_song")
 const singing_part_choose = document.getElementById("choose_track")
 const backing_player = document.getElementById("backing_player")
+const record_area = document.getElementById("record")
+const no_record_area = document.getElementById("no_record")
 
 let all_song_list = []
+let recordable
 
 export let song_name
 export let singing_part
@@ -56,6 +59,7 @@ const change_track_names = () => {
             const option = document.createElement("option");
             option.text = track.part;
             singing_part_choose.add(option)
+            recordable = track.recordable
         }
     })
 }
@@ -89,11 +93,23 @@ song_name_choose.onchange = function (){
     song_name = song_name_choose.value
     song_is_chosen = false
     change_track_names()
+    if (!recordable){
+        record_area.style.display = "none";
+        no_record_area.style.display = "inline";
+    }
+    else{
+        record_area.style.display = "inline";
+        no_record_area.style.display = "none";
+    }
 }
 singing_part_choose.onchange = function (){
     singing_part = singing_part_choose.value
+    let norecord_flag = ""
+    if (!recordable){
+        norecord_flag = "NOREC "
+    }
     if (song_name != "blank" && singing_part != "blank"){
-        backing_track_file = audio_base_url + '/' + song_name + '/' + song_name + '_' + singing_part + ".mp3"
+        backing_track_file = audio_base_url + '/' + norecord_flag + song_name + '/' + song_name + '_' + singing_part + ".mp3"
         backing_player.setAttribute("src", backing_track_file)
         song_is_chosen = true
     }

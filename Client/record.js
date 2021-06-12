@@ -4,7 +4,7 @@ import {password_entered} from "/log_in.js"
 const button_rec = document.getElementById("button_rec")
 const button_stop_rec = document.getElementById("button_stop_rec")
 const recordings_area = document.getElementById("recordings_area")
-const practice_player = document.getElementById("backing_player")
+const practice_area = document.getElementById("practice")
 
 let record_mode = false
 let recordings = []
@@ -17,7 +17,7 @@ const start_recording = () => {
     else if (!record_mode && song_is_chosen){
         record_mode = true
         button_rec.className="rec_button"
-        practice_player.style.display = "none";
+        practice_area.style.visibility = "hidden";
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
 
@@ -83,7 +83,7 @@ const start_recording = () => {
                     //log_times(timers);
                     button_rec.className="big_button"
                     button_stop_rec.onclick = null
-                    practice_player.style.display = "inline";
+                    practice_area.style.visibility = "visible";
                     record_mode = false
                 }
 

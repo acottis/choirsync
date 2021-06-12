@@ -159,9 +159,18 @@ async function listFiles() {
         let song = split_path[split_path.length - 1]
         let part = song.split("_")[1].replace(".mp3","")
         let folder = split_path[split_path.length - 2]
+        let recordable
+        if (folder.includes("NOREC ") ){
+            recordable = false
+            folder = folder.replace("NOREC ","")
+        }
+        else{
+            recordable = true
+        }
         songs.push({
             song: folder,
-            part: part
+            part: part,
+            recordable: recordable
         })
     })
 
