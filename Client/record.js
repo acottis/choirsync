@@ -11,15 +11,6 @@ let record_mode = false
 let recordings = []
 let rec_audio_playing = false
 
-const temp = () => {
-    const backing_track = new Audio(backing_track_file);
-    backing_track.play();
-    setTimeout(function(){
-        backing_track.pause();
-    },
-    8000);
-}
-
 const start_recording = () => {
     console.log(mimetype_chosen)
     if (backing_audio_playing || rec_audio_playing){
@@ -288,8 +279,7 @@ const delete_recording = (id) => {
 }
 
 button_rec.onclick = start_recording
-//button_rec_test.onclick = test_record
-button_rec_test.onclick = temp
+button_rec_test.onclick = test_record
 
 const log_times = (timers) =>{
     let text = "\n\nTimers"
