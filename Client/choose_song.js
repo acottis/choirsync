@@ -36,13 +36,19 @@ export const set_up_songs = async () => {
 const change_song_names = () => {
     let song_list = []
     all_song_list.forEach(track => {
-        if ( !(song_list.includes(track.song)) ) {
-            song_list.push(track.song)
+        if ( !(song_list.some(song => song.name == track.song)) ) {
+            song_list.push({
+                name: track.song,
+                recordable: track.recordable
+            })
         }
     })
     song_list.forEach(song => {
         const option = document.createElement("option");
-        option.text = song;
+        option.text = song.name;
+        if (!song.recordable){
+            option.style.color = "darkgrey"
+        }
         song_name_choose.add(option)
     })
 }
