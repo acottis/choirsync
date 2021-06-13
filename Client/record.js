@@ -11,8 +11,6 @@ let record_mode = false
 let recordings = []
 let rec_audio_playing = false
 
-console.log(mimetype_chosen)
-
 const start_recording = () => {
     if (backing_audio_playing || rec_audio_playing){
         alert("Recording not started, please pause music first")
@@ -32,6 +30,7 @@ const start_recording = () => {
                 const mediaRecorder = new MediaRecorder(stream, {
                     mimeType: mimetype_chosen
                 });
+                console.log(mediaRecorder.mimeType)
 
                 timers["AudioLoad"] = new Date();
                 const backing_track = new Audio(backing_track_file);
@@ -115,6 +114,7 @@ const test_record = () => {
                 const mediaRecorder = new MediaRecorder(stream, {
                     mimeType: mimetype_chosen
                 });
+                console.log(mediaRecorder.mimeType)
 
                 const backing_track = new Audio(backing_track_file);
                 backing_track.currentTime = 15;
