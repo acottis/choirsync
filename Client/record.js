@@ -30,6 +30,7 @@ const start_recording = () => {
                 const mediaRecorder = new MediaRecorder(stream, {
                     mimeType: mimetype_chosen
                 });
+                console.log(mediaRecorder.mimeType)
 
                 timers["AudioLoad"] = new Date();
                 const backing_track = new Audio(backing_track_file);
@@ -113,6 +114,7 @@ const test_record = () => {
                 const mediaRecorder = new MediaRecorder(stream, {
                     mimeType: mimetype_chosen
                 });
+                console.log(mediaRecorder.mimeType)
 
                 const backing_track = new Audio(backing_track_file);
                 backing_track.currentTime = 15;
