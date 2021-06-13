@@ -15,7 +15,10 @@ const start_recording = () => {
     if (backing_audio_playing || rec_audio_playing){
         alert("Recording not started, please pause music first")
     }
-    else if (!record_mode && song_is_chosen){
+    else if (!song_is_chosen){
+        alert("Please choose a backing track")
+    }
+    else if (!record_mode){
         record_mode = true
         button_rec.style.backgroundColor = "red"
         practice_area.style.visibility = "hidden";
@@ -96,7 +99,10 @@ const test_record = () => {
     if (backing_audio_playing || rec_audio_playing){
         alert("Recording not started, please pause music first")
     }
-    else if (!record_mode && song_is_chosen){
+    else if (!song_is_chosen){
+        alert("Please choose a backing track")
+    }
+    else if (!record_mode){
         record_mode = true
         button_rec_test.style.backgroundColor = "red"
         practice_area.style.visibility = "hidden";
