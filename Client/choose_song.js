@@ -98,8 +98,8 @@ song_name_choose.onchange = function (){
         no_record_area.style.display = "inline";
     }
     else{
-        record_area.style.display = "inline";
-        no_record_area.style.display = "none";
+        record_area.style.display = null;
+        no_record_area.style.display = null;
     }
 }
 singing_part_choose.onchange = function (){

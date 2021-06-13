@@ -2,6 +2,7 @@ import {backing_track_file, song_name, singing_part, song_is_chosen, backing_aud
 import {password_entered} from "/log_in.js"
 
 const button_rec = document.getElementById("button_rec")
+const button_rec_test = document.getElementById("button_rec_test")
 const button_stop_rec = document.getElementById("button_stop_rec")
 const recordings_area = document.getElementById("recordings_area")
 const practice_area = document.getElementById("practice")
@@ -16,7 +17,7 @@ const start_recording = () => {
     }
     else if (!record_mode && song_is_chosen){
         record_mode = true
-        button_rec.className="rec_button"
+        button_rec.style.backgroundColor = "red"
         practice_area.style.visibility = "hidden";
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
@@ -81,11 +82,70 @@ const start_recording = () => {
                     recordings.push(new_recording)
                     add_recording_to_page(recordings.length-1)
                     //log_times(timers);
-                    button_rec.className="big_button"
+                    button_rec.style.backgroundColor = null
                     button_stop_rec.onclick = null
-                    practice_area.style.visibility = "visible";
+                    practice_area.style.visibility = null
                     record_mode = false
                 }
+
+            });
+    }
+};
+
+const test_record = () => {
+    if (backing_audio_playing || rec_audio_playing){
+        alert("Recording not started, please pause music first")
+    }
+    else if (!record_mode && song_is_chosen){
+        record_mode = true
+        button_rec_test.style.backgroundColor = "red"
+        practice_area.style.visibility = "hidden";
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+
+                const audioChunks = [];
+                const mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: mimetype_chosen
+                });
+
+                const backing_track = new Audio(backing_track_file);
+
+                const start_recording = () =>{
+                    backing_track.play();
+                    mediaRecorder.start();
+                }
+
+                const stop_recording = () =>{
+                    mediaRecorder.stop();
+                    backing_track.pause();
+                }
+
+                backing_track.addEventListener("canplaythrough", event => {
+                    start_recording()
+                    setTimeout(function(){
+                        stop_recording()
+                    },
+                    5000);
+                })
+
+                mediaRecorder.addEventListener("dataavailable", event => {
+                    audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener("stop", () => {
+                    stream.getTracks()
+                        .forEach(track => track.stop())
+                    const recording_blob = new Blob(audioChunks);
+                    const audioUrl = URL.createObjectURL(recording_blob);
+                    const test_recording = new Audio(audioUrl);
+                    button_rec_test.style.backgroundColor = "blue"
+                    test_recording.play()
+                    test_recording.addEventListener("ended", event => {
+                        button_rec_test.style.backgroundColor = null
+                        practice_area.style.visibility = null
+                        record_mode = false
+                    });
+                });
 
             });
     }
@@ -209,6 +269,7 @@ const delete_recording = (id) => {
 }
 
 button_rec.onclick = start_recording
+button_rec_test.onclick = test_record
 
 const log_times = (timers) =>{
     let text = "\n\nTimers"

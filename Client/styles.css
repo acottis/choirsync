@@ -35,7 +35,12 @@ select{
 #choose,#practice,#record,#no_record{
     text-align: center;
 }
-
+#practice{
+    padding: 20px 0;
+}
+#no_record{
+    padding: 50px 0 0;
+}
 #info{
     padding: 20px;
     border-right: 2px solid;
@@ -45,9 +50,11 @@ select{
     padding: 20px;
     font-size: 13px;
 }
+.recording{
+    padding: 0 0 20px 0;
+}
 .recording_name{
     margin-block: 0;
-    padding: 0 0 5px 0;
     font-weight: bold;
 }
 .recording_time{
@@ -73,25 +80,18 @@ select{
 }
 
 button,.big_button,.rec_button{
+    background-color: grey;
     color: white;
     text-align: center;
     display: inline-block;
     font-family: Verdana,sans-serif;
 }
 button{
-    background-color: grey;
     padding: 2px;
     font-size:13px;
-    margin: 5px 10px 20px 0px;
+    margin: 5px 10px 5px 0px;
   }
 .big_button{
-    background-color: grey;
-    padding: 5px;
-    font-size:17px;
-    font-weight: bold
-}
-.rec_button{
-    background-color: red;
     padding: 5px;
     font-size:17px;
     font-weight: bold
