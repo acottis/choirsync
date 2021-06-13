@@ -166,7 +166,10 @@ const test_record = () => {
                     });
                 });
 
-            });
+            })
+            .catch(err => {
+                console.log("no permission")
+            })
     }
 };
 
