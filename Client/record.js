@@ -11,8 +11,9 @@ let record_mode = false
 let recordings = []
 let rec_audio_playing = false
 
+console.log(mimetype_chosen)
+
 const start_recording = () => {
-    console.log(mimetype_chosen)
     if (backing_audio_playing || rec_audio_playing){
         alert("Recording not started, please pause music first")
     }
@@ -97,7 +98,6 @@ const start_recording = () => {
 };
 
 const test_record = () => {
-    console.log(mimetype_chosen)
     if (backing_audio_playing || rec_audio_playing){
         alert("Recording not started, please pause music first")
     }
