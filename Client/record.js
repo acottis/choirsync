@@ -115,6 +115,7 @@ const test_record = () => {
                 });
 
                 const backing_track = new Audio(backing_track_file);
+                backing_track.currentTime = 15;
 
                 const start_recording = () =>{
                     backing_track.play();
@@ -131,7 +132,7 @@ const test_record = () => {
                     setTimeout(function(){
                         stop_recording()
                     },
-                    5000);
+                    8000);
                 })
 
                 mediaRecorder.addEventListener("dataavailable", event => {
