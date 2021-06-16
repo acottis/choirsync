@@ -91,6 +91,18 @@ const start_recording = () => {
                     record_mode = false
                 }
 
+            })
+            .catch(error => {
+                if (error.toString().includes("Allowed") || error.toString().includes("Permission")){
+                    alert("Please allow the website to use your microphone")
+                }
+                else{
+                    alert("Something went wrong: " + error)
+                }
+                button_rec.style.backgroundColor = null
+                button_stop_rec.onclick = null
+                practice_area.style.visibility = null
+                record_mode = false
             });
     }
 };
@@ -154,6 +166,17 @@ const test_record = () => {
                     });
                 });
 
+            })
+            .catch(error => {
+                if (error.toString().includes("Allowed") || error.toString().includes("Permission")){
+                    alert("Please allow the website to use your microphone")
+                }
+                else{
+                    alert("Something went wrong: " + error)
+                }
+                button_rec_test.style.backgroundColor = null
+                practice_area.style.visibility = null
+                record_mode = false
             });
     }
 };
