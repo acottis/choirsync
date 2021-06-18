@@ -98,7 +98,7 @@ const start_recording = (test_only) => {
                         .forEach(track => track.stop())
                     timers["StopTrack"] = new Date();
 
-                    const recording_blob = new Blob(audioChunks);
+                    const recording_blob = new Blob(audioChunks, {type:mediaRecorder.mimeType});
                     const audioUrl = URL.createObjectURL(recording_blob);
 
                     if (test_only){
