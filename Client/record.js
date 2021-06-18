@@ -43,17 +43,10 @@ const start_recording = (test_only) => {
                 const backing_track = new Audio(backing_track_file);
                 timers["AudioLoaded"] = new Date();
                 if (test_only){
-                    if (mimetype_chosen == ""){
-                        backing_track.currentTime = 15000;
-                        console.log("set: " + backing_track.currentTime);
-                    }
-                    else{
-                        backing_track.currentTime = 15;
-                    }
+                    backing_track.currentTime = 15;
                 }
 
                 const start_recording = () =>{
-                    console.log("start: " + backing_track.currentTime);
                     backing_track.play();
                     timers["PlayStarted"] = new Date();
                     mediaRecorder.start();
@@ -65,7 +58,6 @@ const start_recording = (test_only) => {
                     timers["RecordPaused"] = new Date();
                     backing_track.pause();
                     timers["AudioPaused"] = new Date();
-                    console.log("end: " + backing_track.currentTime);
                 }
 
                 backing_track.addEventListener("canplaythrough", event => {
