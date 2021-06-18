@@ -12,7 +12,6 @@ let recordings = []
 let rec_audio_playing = false
 
 const start_recording = (test_only) => {
-    console.log(mimetype_chosen)
     if (backing_audio_playing || rec_audio_playing){
         alert("Recording not started, please pause music first")
     }
@@ -46,14 +45,15 @@ const start_recording = (test_only) => {
                 if (test_only){
                     if (mimetype_chosen == ""){
                         backing_track.currentTime = 15;
+                        console.log("set: " + backing_track.currentTime);
                     }
                     else{
                         backing_track.currentTime = 15;
                     }
-                    console.log("start: " + backing_track.currentTime);
                 }
 
                 const start_recording = () =>{
+                    console.log("start: " + backing_track.currentTime);
                     backing_track.play();
                     timers["PlayStarted"] = new Date();
                     mediaRecorder.start();
