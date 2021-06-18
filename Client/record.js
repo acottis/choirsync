@@ -38,17 +38,19 @@ const start_recording = (test_only) => {
 
                 const timers = {};
                 const audioChunks = [];
-                // const mediaRecorder = new MediaRecorder(stream, {
-                //     mimeType: mimetype_chosen
-                // });
-                const mediaRecorder = new MediaRecorder(stream);
+                const mediaRecorder = new MediaRecorder(stream, {mimetype_chosen});
 
                 timers["AudioLoad"] = new Date();
                 const backing_track = new Audio(backing_track_file);
                 timers["AudioLoaded"] = new Date();
                 if (test_only){
-                    backing_track.currentTime = 15;
-                    console.log("hello")
+                    if (mimetype_chosen == ""){
+                        backing_track.currentTime = 15;
+                    }
+                    else{
+                        backing_track.currentTime = 15;
+                    }
+                    console.log("start: " + backing_track.currentTime);
                 }
 
                 const start_recording = () =>{
@@ -63,6 +65,7 @@ const start_recording = (test_only) => {
                     timers["RecordPaused"] = new Date();
                     backing_track.pause();
                     timers["AudioPaused"] = new Date();
+                    console.log("end: " + backing_track.currentTime);
                 }
 
                 backing_track.addEventListener("canplaythrough", event => {
