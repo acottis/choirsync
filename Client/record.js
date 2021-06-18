@@ -44,7 +44,7 @@ const start_recording = (test_only) => {
                 timers["AudioLoaded"] = new Date();
                 if (test_only){
                     if (mimetype_chosen == ""){
-                        backing_track.currentTime = 15;
+                        backing_track.currentTime = 15000;
                         console.log("set: " + backing_track.currentTime);
                     }
                     else{
