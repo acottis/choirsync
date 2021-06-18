@@ -31,104 +31,110 @@ const start_recording = (test_only) => {
         }
         button_rec_use.style.backgroundColor = "red"
         practice_area.style.visibility = "hidden";
+        const timers = {};
 
-        navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(stream => {
+        timers["AudioLoad"] = new Date();
+        const backing_track = new Audio(backing_track_file);
+        timers["AudioLoaded"] = new Date();
 
-                const timers = {};
-                const audioChunks = [];
-                const mediaRecorder = new MediaRecorder(stream, {mimetype_chosen});
+        backing_track.addEventListener("loadeddata", event => {
+            if (test_only){
+                backing_track.currentTime = 15;
+            }
+        })
 
-                timers["AudioLoad"] = new Date();
-                const backing_track = new Audio(backing_track_file);
-                timers["AudioLoaded"] = new Date();
-                if (test_only){
-                    backing_track.currentTime = 15;
-                }
+        //const recording_process = () =>{
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
 
-                const start_recording = () =>{
-                    backing_track.play();
-                    timers["PlayStarted"] = new Date();
-                    mediaRecorder.start();
-                    timers["RecordStarted"] = new Date();
-                }
+                    const audioChunks = [];
+                    const mediaRecorder = new MediaRecorder(stream, {mimetype_chosen});
 
-                const stop_recording = () =>{
-                    mediaRecorder.stop();
-                    timers["RecordPaused"] = new Date();
-                    backing_track.pause();
-                    timers["AudioPaused"] = new Date();
-                }
-
-                backing_track.addEventListener("canplaythrough", event => {
-                    timers["CanplayListener"] = new Date();
-                    start_recording()
-                    if (test_only){
-                        setTimeout(function(){
-                            if (mediaRecorder.state == "recording"){
-                                stop_recording()
-                            }
-                        },
-                        8000);
+                    const start_recording = () =>{
+                        backing_track.play();
+                        timers["PlayStarted"] = new Date();
+                        mediaRecorder.start();
+                        timers["RecordStarted"] = new Date();
                     }
-                })
 
-                mediaRecorder.addEventListener("dataavailable", event => {
-                    audioChunks.push(event.data);
-                });
-                
-                button_stop_rec.onclick = stop_recording
+                    const stop_recording = () =>{
+                        mediaRecorder.stop();
+                        timers["RecordPaused"] = new Date();
+                        backing_track.pause();
+                        timers["AudioPaused"] = new Date();
+                    }
 
-                backing_track.addEventListener("ended", event => {
-                    timers["EndedListener"] = new Date();
-                    stop_recording()
-                });
+                    backing_track.addEventListener("canplaythrough", event => {
+                        timers["CanplayListener"] = new Date();
+                        start_recording()
+                        if (test_only){
+                            setTimeout(function(){
+                                if (mediaRecorder.state == "recording"){
+                                    stop_recording()
+                                }
+                            },
+                            8000);
+                        }
+                    })
 
-                mediaRecorder.addEventListener("stop", () => {
-                    after_rec()
-                });
+                    mediaRecorder.addEventListener("dataavailable", event => {
+                        audioChunks.push(event.data);
+                    });
+                    
+                    button_stop_rec.onclick = stop_recording
 
-                const after_rec = () =>{
-                    stream.getTracks()
-                        .forEach(track => track.stop())
-                    timers["StopTrack"] = new Date();
+                    backing_track.addEventListener("ended", event => {
+                        timers["EndedListener"] = new Date();
+                        stop_recording()
+                    });
 
-                    const recording_blob = new Blob(audioChunks, {type:mediaRecorder.mimeType});
-                    const audioUrl = URL.createObjectURL(recording_blob);
+                    mediaRecorder.addEventListener("stop", () => {
+                        after_rec()
+                    });
 
-                    if (test_only){
-                        const test_recording = new Audio(audioUrl);
-                        button_rec_test.style.backgroundColor = "blue"
-                        test_recording.play()                    
-                        test_recording.addEventListener("ended", event => {
+                    const after_rec = () =>{
+                        stream.getTracks()
+                            .forEach(track => track.stop())
+                        timers["StopTrack"] = new Date();
+
+                        const recording_blob = new Blob(audioChunks, {type:mediaRecorder.mimeType});
+                        const audioUrl = URL.createObjectURL(recording_blob);
+
+                        if (test_only){
+                            const test_recording = new Audio(audioUrl);
+                            button_rec_test.style.backgroundColor = "blue"
+                            test_recording.play()                    
+                            test_recording.addEventListener("ended", event => {
+                                finish_off()
+                            })
+                        }
+                        else{
+                            const new_recording = {
+                                "blob": recording_blob,
+                                "audiourl": audioUrl,
+                                "song": song_name,
+                                "part": singing_part,
+                                "time": new Date(Date.now())
+                            }
+                            recordings.push(new_recording)
+                            add_recording_to_page(recordings.length-1)
                             finish_off()
-                        })
+                        }
+                    }
+
+                })
+                .catch(error => {
+                    if (error.toString().includes("Allowed") || error.toString().includes("Permission")){
+                        alert("Please allow the website to use your microphone")
                     }
                     else{
-                        const new_recording = {
-                            "blob": recording_blob,
-                            "audiourl": audioUrl,
-                            "song": song_name,
-                            "part": singing_part,
-                            "time": new Date(Date.now())
-                        }
-                        recordings.push(new_recording)
-                        add_recording_to_page(recordings.length-1)
-                        finish_off()
+                        alert("Something went wrong: " + error)
                     }
-                }
+                    finish_off()
+                });
 
-            })
-            .catch(error => {
-                if (error.toString().includes("Allowed") || error.toString().includes("Permission")){
-                    alert("Please allow the website to use your microphone")
-                }
-                else{
-                    alert("Something went wrong: " + error)
-                }
-                finish_off()
-            });
-
+        //}
+        
         const finish_off = () =>{
             //log_times(timers);
             button_rec_use.style.backgroundColor = null
