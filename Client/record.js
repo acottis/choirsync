@@ -20,7 +20,9 @@ const start_recording = (test_only) => {
         alert("Please choose a backing track")
     }
     else if (!record_mode){
+
         record_mode = true
+
         let button_rec_use
         if (test_only){
             button_rec_use = button_rec_test
@@ -30,6 +32,7 @@ const start_recording = (test_only) => {
         }
         button_rec_use.style.backgroundColor = "red"
         practice_area.style.visibility = "hidden";
+
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
 
@@ -44,6 +47,7 @@ const start_recording = (test_only) => {
                 timers["AudioLoaded"] = new Date();
                 if (test_only){
                     backing_track.currentTime = 15;
+                    console.log("hello")
                 }
 
                 const start_recording = () =>{
@@ -92,8 +96,10 @@ const start_recording = (test_only) => {
                     stream.getTracks()
                         .forEach(track => track.stop())
                     timers["StopTrack"] = new Date();
+
                     const recording_blob = new Blob(audioChunks);
                     const audioUrl = URL.createObjectURL(recording_blob);
+
                     if (test_only){
                         const test_recording = new Audio(audioUrl);
                         button_rec_test.style.backgroundColor = "blue"
