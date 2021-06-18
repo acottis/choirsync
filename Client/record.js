@@ -38,9 +38,10 @@ const start_recording = (test_only) => {
 
                 const timers = {};
                 const audioChunks = [];
-                const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: mimetype_chosen
-                });
+                // const mediaRecorder = new MediaRecorder(stream, {
+                //     mimeType: mimetype_chosen
+                // });
+                const mediaRecorder = new MediaRecorder(stream);
 
                 timers["AudioLoad"] = new Date();
                 const backing_track = new Audio(backing_track_file);
@@ -51,12 +52,7 @@ const start_recording = (test_only) => {
                 }
 
                 const start_recording = () =>{
-                    try{
-                        backing_track.play();
-                    }
-                    catch{
-                        alert("Something went wrong, please try again")
-                    }
+                    backing_track.play();
                     timers["PlayStarted"] = new Date();
                     mediaRecorder.start();
                     timers["RecordStarted"] = new Date();
