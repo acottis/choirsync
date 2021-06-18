@@ -28,8 +28,11 @@ export const set_up_songs = async () => {
     if(MediaRecorder.isTypeSupported("audio/webm")){
         mimetype_chosen = "audio/webm"
     }
-    else {
+    else if(MediaRecorder.isTypeSupported("audio/mpeg")){
         mimetype_chosen = "audio/mpeg"
+    }
+    else{
+        mimetype_chosen = "audio/mp4"
     }
 }
 

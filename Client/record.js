@@ -12,6 +12,7 @@ let recordings = []
 let rec_audio_playing = false
 
 const start_recording = (test_only) => {
+    console.log(mimetype_chosen)
     if (backing_audio_playing || rec_audio_playing){
         alert("Recording not started, please pause music first")
     }
@@ -135,80 +136,6 @@ const start_recording = (test_only) => {
         }
     }
 };
-
-// const test_record = () => {
-//     if (backing_audio_playing || rec_audio_playing){
-//         alert("Recording not started, please pause music first")
-//     }
-//     else if (!song_is_chosen){
-//         alert("Please choose a backing track")
-//     }
-//     else if (!record_mode){
-//         record_mode = true
-//         button_rec_test.style.backgroundColor = "red"
-//         practice_area.style.visibility = "hidden";
-//         navigator.mediaDevices.getUserMedia({ audio: true })
-//             .then(stream => {
-
-//                 const audioChunks = [];
-//                 const mediaRecorder = new MediaRecorder(stream, {
-//                     mimeType: mimetype_chosen
-//                 });
-
-//                 const backing_track = new Audio(backing_track_file);
-//                 backing_track.currentTime = 15;
-
-//                 const start_recording = () =>{
-//                     backing_track.play();
-//                     mediaRecorder.start();
-//                 }
-
-//                 const stop_recording = () =>{
-//                     mediaRecorder.stop();
-//                     backing_track.pause();
-//                 }
-
-//                 backing_track.addEventListener("canplaythrough", event => {
-//                     start_recording()
-//                     setTimeout(function(){
-//                         stop_recording()
-//                     },
-//                     8000);
-//                 })
-
-//                 mediaRecorder.addEventListener("dataavailable", event => {
-//                     audioChunks.push(event.data);
-//                 });
-
-//                 mediaRecorder.addEventListener("stop", () => {
-//                     stream.getTracks()
-//                         .forEach(track => track.stop())
-//                     const recording_blob = new Blob(audioChunks);
-//                     const audioUrl = URL.createObjectURL(recording_blob);
-//                     const test_recording = new Audio(audioUrl);
-//                     button_rec_test.style.backgroundColor = "blue"
-//                     test_recording.play()
-//                     test_recording.addEventListener("ended", event => {
-//                         button_rec_test.style.backgroundColor = null
-//                         practice_area.style.visibility = null
-//                         record_mode = false
-//                     });
-//                 });
-
-//             })
-//             .catch(error => {
-//                 if (error.toString().includes("Allowed") || error.toString().includes("Permission")){
-//                     alert("Please allow the website to use your microphone")
-//                 }
-//                 else{
-//                     alert("Something went wrong: " + error)
-//                 }
-//                 button_rec_test.style.backgroundColor = null
-//                 practice_area.style.visibility = null
-//                 record_mode = false
-//             });
-//     }
-// };
 
 const add_recording_to_page = (index) => {
 
