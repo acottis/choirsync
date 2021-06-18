@@ -32,8 +32,28 @@ export const set_up_songs = async () => {
         mimetype_chosen = "audio/mpeg"
     }
     else{
-        mimetype_chosen = "audio/mp4"
+        mimetype_chosen = 'audio/mp4;codecs="mp4a.67"'
     }
+    test_media_type("audio/webm")
+    test_media_type("audio/mpeg")
+    test_media_type("audio/mp3")
+    test_media_type("audio/mp4")
+    test_media_type("audio/ogg")
+    test_media_type("audio/aac")
+    test_media_type("audio/flac")
+    test_media_type("audio/x-flac")
+    test_media_type("audio/wave")
+    test_media_type("audio/wav")
+    test_media_type("audio/x-wav")
+    test_media_type("audio/x-pn_wav")
+    test_media_type("audio/3gpp")
+    test_media_type("audio/3gpp2")
+    test_media_type("audio/3gp2")
+}
+
+const test_media_type = (type_test) =>{
+    const test_result = MediaRecorder.isTypeSupported(type_test)
+    console.log(type_test + " " + test_result)
 }
 
 const change_song_names = () => {
