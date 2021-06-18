@@ -32,7 +32,7 @@ export const set_up_songs = async () => {
         mimetype_chosen = "audio/mpeg"
     }
     else{
-        mimetype_chosen = 'audio/mp4;codecs="mp4a.67"'
+        mimetype_chosen = 'audio/mp4'
     }
     test_media_type("audio/webm")
     test_media_type("audio/mpeg")
