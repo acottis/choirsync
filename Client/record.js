@@ -51,7 +51,12 @@ const start_recording = (test_only) => {
                 }
 
                 const start_recording = () =>{
-                    backing_track.play();
+                    try{
+                        backing_track.play();
+                    }
+                    catch{
+                        alert("Something went wrong, please try again")
+                    }
                     timers["PlayStarted"] = new Date();
                     mediaRecorder.start();
                     timers["RecordStarted"] = new Date();
