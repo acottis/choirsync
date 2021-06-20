@@ -38,12 +38,20 @@ const start_recording = (test_only) => {
         timers["AudioLoaded"] = new Date();
 
         backing_track.addEventListener("loadeddata", event => {
+            timers["AudioLoaded"] = new Date();
             if (test_only){
                 backing_track.currentTime = 15;
             }
+            recording_process()
         })
 
-        //const recording_process = () =>{
+        let ready_to_play
+        backing_track.addEventListener("canplaythrough", event => {
+            timers["CanplayListenerOut"] = new Date();
+            ready_to_play = true
+        })
+
+        const recording_process = () =>{
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(stream => {
 
@@ -55,6 +63,14 @@ const start_recording = (test_only) => {
                         timers["PlayStarted"] = new Date();
                         mediaRecorder.start();
                         timers["RecordStarted"] = new Date();
+                        if (test_only){
+                            setTimeout(function(){
+                                if (mediaRecorder.state == "recording"){
+                                    stop_recording()
+                                }
+                            },
+                            8000);
+                        }
                     }
 
                     const stop_recording = () =>{
@@ -64,17 +80,14 @@ const start_recording = (test_only) => {
                         timers["AudioPaused"] = new Date();
                     }
 
+                    if (ready_to_play){
+                        timers["CheckedReady"] = new Date();
+                        start_recording()                        
+                    }
+
                     backing_track.addEventListener("canplaythrough", event => {
-                        timers["CanplayListener"] = new Date();
+                        timers["CanplayListenerIn"] = new Date();
                         start_recording()
-                        if (test_only){
-                            setTimeout(function(){
-                                if (mediaRecorder.state == "recording"){
-                                    stop_recording()
-                                }
-                            },
-                            8000);
-                        }
                     })
 
                     mediaRecorder.addEventListener("dataavailable", event => {
@@ -89,6 +102,7 @@ const start_recording = (test_only) => {
                     });
 
                     mediaRecorder.addEventListener("stop", () => {
+                        timers["RecordStopListener"] = new Date();
                         after_rec()
                     });
 
@@ -133,10 +147,10 @@ const start_recording = (test_only) => {
                     finish_off()
                 });
 
-        //}
+        }
         
         const finish_off = () =>{
-            //log_times(timers);
+            log_times(timers);
             button_rec_use.style.backgroundColor = null
             button_stop_rec.onclick = null
             practice_area.style.visibility = null
