@@ -46,10 +46,11 @@ const start_recording = (test_only) => {
         })
 
         let ready_to_play
-        backing_track.addEventListener("canplaythrough", event => {
+        backing_track.addEventListener("canplaythrough", canplaythrough_function)
+        const canplaythrough_function = () =>{
             timers["CanplayListenerOut"] = new Date();
             ready_to_play = true
-        })
+        }
 
         const recording_process = () =>{
             navigator.mediaDevices.getUserMedia({ audio: true })
@@ -83,7 +84,7 @@ const start_recording = (test_only) => {
 
                     if (ready_to_play){
                         timers["CheckedReady"] = new Date();
-                        backing_track.removeEventListener("canplaythrough")
+                        backing_track.removeEventListener("canplaythrough", canplaythrough_function)
                         start_recording()                        
                     }
                     else{
