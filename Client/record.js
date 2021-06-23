@@ -63,15 +63,18 @@ const start_recording = (test_only) => {
                     const start_recording = () =>{
                         backing_track.play();
                         timers["PlayStarted"] = new Date();
-                        mediaRecorder.start();
-                        timers["RecordStarted"] = new Date();
+                        setTimeout(function(){
+                            mediaRecorder.start();
+                            timers["RecordStarted"] = new Date();
+                        },
+                        1000);
                         if (test_only){
                             setTimeout(function(){
                                 if (mediaRecorder.state == "recording"){
                                     stop_recording()
                                 }
                             },
-                            8000);
+                            7000);
                         }
                     }
 
@@ -84,7 +87,6 @@ const start_recording = (test_only) => {
 
                     if (ready_to_play){
                         timers["CheckedReady"] = new Date();
-                        backing_track.removeEventListener("canplaythrough", canplaythrough_function)
                         start_recording()                        
                     }
                     else{
