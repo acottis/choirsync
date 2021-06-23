@@ -291,7 +291,7 @@ button_rec_test.onclick = function(){
 const log_times = (timers) =>{
     let text = "\n\nTimers"
     for (const [key, value] of Object.entries(timers)) {
-        text += `\n${key}, ${value - timers["AudioLoad"]}`
+        text += `\n${key},${value - timers["AudioLoad"]}`
     }
     var b = document.createElement('b');
     document.body.appendChild(b);
