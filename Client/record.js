@@ -46,11 +46,11 @@ const start_recording = (test_only) => {
         })
 
         let ready_to_play
-        backing_track.addEventListener("canplaythrough", canplaythrough_function)
         const canplaythrough_function = () =>{
             timers["CanplayListenerOut"] = new Date();
             ready_to_play = true
         }
+        backing_track.addEventListener("canplaythrough", canplaythrough_function)
 
         const recording_process = () =>{
             navigator.mediaDevices.getUserMedia({ audio: true })
