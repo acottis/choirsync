@@ -57,6 +57,7 @@ const start_recording = (test_only) => {
 
                     const audioChunks = [];
                     const mediaRecorder = new MediaRecorder(stream, {mimetype_chosen});
+                    timers["NewMediaRecorder"] = new Date();
 
                     const start_recording = () =>{
                         backing_track.play();
@@ -82,13 +83,15 @@ const start_recording = (test_only) => {
 
                     if (ready_to_play){
                         timers["CheckedReady"] = new Date();
+                        backing_track.removeEventListener("canplaythrough")
                         start_recording()                        
                     }
-
-                    backing_track.addEventListener("canplaythrough", event => {
-                        timers["CanplayListenerIn"] = new Date();
-                        start_recording()
-                    })
+                    else{
+                        backing_track.addEventListener("canplaythrough", event => {
+                            timers["CanplayListenerIn"] = new Date();
+                            start_recording()
+                        })
+                    }
 
                     mediaRecorder.addEventListener("dataavailable", event => {
                         audioChunks.push(event.data);
@@ -272,8 +275,10 @@ const send_recording = (recording) => {
 }
 
 const delete_recording = (id) => {
-    const recordings_to_delete = document.getElementById(`recording_${id}`)
-    recordings_to_delete.remove()
+    if (confirm("Are you sure?")){
+        const recordings_to_delete = document.getElementById(`recording_${id}`)
+        recordings_to_delete.remove()
+    }
 }
 
 button_rec.onclick = function(){
