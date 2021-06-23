@@ -23,11 +23,14 @@ const start_recording = (test_only) => {
         record_mode = true
 
         let button_rec_use
+        let rec_delay
         if (test_only){
             button_rec_use = button_rec_test
+            rec_delay = 0
         }
         else{
             button_rec_use = button_rec
+            rec_delay = 2000
         }
         button_rec_use.style.backgroundColor = "red"
         practice_area.style.visibility = "hidden";
@@ -67,7 +70,7 @@ const start_recording = (test_only) => {
                             mediaRecorder.start();
                             timers["RecordStarted"] = new Date();
                         },
-                        1500);
+                        rec_delay);
                         if (test_only){
                             setTimeout(function(){
                                 if (mediaRecorder.state == "recording"){
