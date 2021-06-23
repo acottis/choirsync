@@ -23,14 +23,11 @@ const start_recording = (test_only) => {
         record_mode = true
 
         let button_rec_use
-        let rec_delay
         if (test_only){
             button_rec_use = button_rec_test
-            rec_delay = 0
         }
         else{
             button_rec_use = button_rec
-            rec_delay = 2000
         }
         button_rec_use.style.backgroundColor = "red"
         practice_area.style.visibility = "hidden";
@@ -49,11 +46,10 @@ const start_recording = (test_only) => {
         })
 
         let ready_to_play
-        const canplaythrough_function = () =>{
+        backing_track.addEventListener("canplaythrough", event =>{
             timers["CanplayListenerOut"] = new Date();
             ready_to_play = true
-        }
-        backing_track.addEventListener("canplaythrough", canplaythrough_function)
+        })
 
         const recording_process = () =>{
             navigator.mediaDevices.getUserMedia({ audio: true })
@@ -66,18 +62,15 @@ const start_recording = (test_only) => {
                     const start_recording = () =>{
                         backing_track.play();
                         timers["PlayStarted"] = new Date();
-                        setTimeout(function(){
-                            mediaRecorder.start();
-                            timers["RecordStarted"] = new Date();
-                        },
-                        rec_delay);
+                        mediaRecorder.start();
+                        timers["RecordStarted"] = new Date();
                         if (test_only){
                             setTimeout(function(){
                                 if (mediaRecorder.state == "recording"){
                                     stop_recording()
                                 }
                             },
-                            8000);
+                            7000);
                         }
                     }
 
