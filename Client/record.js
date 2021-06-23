@@ -61,11 +61,8 @@ const start_recording = (test_only) => {
                     timers["NewMediaRecorder"] = new Date();
 
                     const start_recording = () =>{
-                        setTimeout(function(){
-                            backing_track.play();
-                            timers["PlayStarted"] = new Date();
-                        },
-                        500);
+                        backing_track.play();
+                        timers["PlayStarted"] = new Date();
                         setTimeout(function(){
                             mediaRecorder.start();
                             timers["RecordStarted"] = new Date();
