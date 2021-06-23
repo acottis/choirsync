@@ -61,20 +61,23 @@ const start_recording = (test_only) => {
                     timers["NewMediaRecorder"] = new Date();
 
                     const start_recording = () =>{
-                        backing_track.play();
-                        timers["PlayStarted"] = new Date();
+                        setTimeout(function(){
+                            backing_track.play();
+                            timers["PlayStarted"] = new Date();
+                        },
+                        500);
                         setTimeout(function(){
                             mediaRecorder.start();
                             timers["RecordStarted"] = new Date();
                         },
-                        1000);
+                        1500);
                         if (test_only){
                             setTimeout(function(){
                                 if (mediaRecorder.state == "recording"){
                                     stop_recording()
                                 }
                             },
-                            7000);
+                            8000);
                         }
                     }
 
