@@ -93,6 +93,7 @@ const start_recording = (test_only) => {
                     }
 
                     mediaRecorder.addEventListener("dataavailable", event => {
+                        timers["DataAvailable"] = new Date();
                         audioChunks.push(event.data);
                     });
                     
@@ -240,10 +241,19 @@ const send_recording = (recording) => {
 
     if (response_text != "cancelled"){
         if (confirm(response_text)){
+
+            let safari_mobile_flag
+            if (navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome")){
+                safari_mobile_flag = safari_mobile_flag + "_safari"
+            }
+            if (navigator.userAgent.includes("Mobile")){
+                safari_mobile_flag = safari_mobile_flag + "_mobile"
+            }
+
             const date_id = new Date(Date.now())
 
             const fd = new FormData();
-            fd.append('recording', recording.blob, `${send_song_name}_${singer_name}_${send_singing_part}_${date_id.toISOString()}.mp3`)
+            fd.append('recording', recording.blob, `${send_song_name}_${singer_name}_${send_singing_part}_${date_id.toISOString()}${safari_mobile_flag}.mp3`)
             fd.append('singer_name', singer_name)
             fd.append('message', message)
             fd.append('password', password_entered)

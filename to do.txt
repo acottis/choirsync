@@ -2,4 +2,4 @@
 something to see timer while recording?
 alternative password for alternative songs
 mono only (firefox)
-remove timers
+remove test timers
