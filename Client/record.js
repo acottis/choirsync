@@ -268,7 +268,6 @@ const send_recording = (recording) => {
             })
             .then( res => res.json() )
             .then ( json_response => {
-                console.log(json_response)
                 if (json_response.status == "success"){
                     alert(`Recording received, thank you ${singer_name}!`)
                 }
