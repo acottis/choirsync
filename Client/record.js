@@ -236,7 +236,7 @@ const send_recording = (recording) => {
         send_song_name = recording.song
         send_singing_part = prompt("What part are you singing?")
         if (send_singing_part != "" && send_singing_part != null){
-            if (confirm("Do you want to add a message?")){
+            if (confirm("Do you want to add a message? Click Cancel if not.")){
                 message = prompt("Add a message to go with your recording")
             }
             response_text = `Hello ${singer_name}, you are about to send your recording of ${send_song_name}, ${send_singing_part} part`
