@@ -42,13 +42,13 @@ const start_recording = (test_only) => {
             if (test_only){
                 backing_track.currentTime = 15;
             }
-            recording_process()
         })
 
-        let ready_to_play
+        //let ready_to_play
         backing_track.addEventListener("canplaythrough", event =>{
             timers["CanplayListenerOut"] = new Date();
-            ready_to_play = true
+            //ready_to_play = true
+            recording_process()
         })
 
         const recording_process = () =>{
@@ -58,6 +58,10 @@ const start_recording = (test_only) => {
                     const audioChunks = [];
                     const mediaRecorder = new MediaRecorder(stream, {mimetype_chosen});
                     timers["NewMediaRecorder"] = new Date();
+                    setTimeout(function(){
+                        start_recording()
+                    },
+                    1000);
 
                     const start_recording = () =>{
                         backing_track.play();
@@ -81,16 +85,16 @@ const start_recording = (test_only) => {
                         timers["AudioPaused"] = new Date();
                     }
 
-                    if (ready_to_play){
-                        timers["CheckedReady"] = new Date();
-                        start_recording()                        
-                    }
-                    else{
-                        backing_track.addEventListener("canplaythrough", event => {
-                            timers["CanplayListenerIn"] = new Date();
-                            start_recording()
-                        })
-                    }
+                    // if (ready_to_play){
+                    //     timers["CheckedReady"] = new Date();
+                    //     start_recording()                        
+                    // }
+                    // else{
+                    //     backing_track.addEventListener("canplaythrough", event => {
+                    //         timers["CanplayListenerIn"] = new Date();
+                    //         start_recording()
+                    //     })
+                    // }
 
                     mediaRecorder.addEventListener("dataavailable", event => {
                         timers["DataAvailable"] = new Date();
