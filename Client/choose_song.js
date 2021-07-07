@@ -10,6 +10,7 @@ const no_record_area = document.getElementById("no_record")
 
 let all_song_list = []
 let recordable
+let secret
 
 export let song_name
 export let singing_part
@@ -42,7 +43,7 @@ const change_song_names = () => {
         if ( !(song_list.some(song => song.name == track.song)) ) {
             song_list.push({
                 name: track.song,
-                recordable: track.recordable
+                recordable: track.recordable,
             })
         }
     })
@@ -69,6 +70,7 @@ const change_track_names = () => {
             option.text = track.part;
             singing_part_choose.add(option)
             recordable = track.recordable
+            secret = track.secret
         }
     })
 }
@@ -114,11 +116,15 @@ song_name_choose.onchange = function (){
 singing_part_choose.onchange = function (){
     singing_part = singing_part_choose.value
     let norecord_flag = ""
+    let secret_flag = ""
     if (!recordable){
         norecord_flag = "NOREC "
     }
+    if (secret){
+        secret_flag = "SECRET "
+    }
     if (song_name != "blank" && singing_part != "blank"){
-        backing_track_file = audio_base_url + '/' + norecord_flag + song_name + '/' + song_name + '_' + singing_part + ".mp3"
+        backing_track_file = audio_base_url + '/' + norecord_flag + secret_flag + song_name + '/' + song_name + '_' + singing_part + ".mp3"
         backing_player.setAttribute("src", backing_track_file)
         song_is_chosen = true
     }
