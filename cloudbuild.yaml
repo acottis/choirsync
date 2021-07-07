@@ -6,7 +6,6 @@ steps:
   - 'DB_URI=${_DB_URI}'
   - 'DISCORD_ENDPOINT=${_DISCORD_ENDPOINT}'
   - 'TURINGTEST=${_TURINGTEST}'
-  - 'TURINGTEST2=${_TURINGTEST2}'
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'bash'
   args: ['-c', 'gcloud app deploy']
