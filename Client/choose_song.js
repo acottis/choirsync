@@ -56,7 +56,7 @@ const change_song_names = () => {
         song_name_choose.add(option)
     })
 }
-
+ 
 const change_track_names = () => {
     singing_part_choose.selectedIndex = 0
     const prev_tracks = Array.from(singing_part_choose.options)
