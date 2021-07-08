@@ -10,7 +10,9 @@ const { Readable } = require('stream');
 const { Storage } = require('@google-cloud/storage');
 
 const password_required = process.env.TURINGTEST
- 
+const secret_password = process.env.TURINGTEST2
+let access_secret
+
 const upload = multer({ storage: multer.memoryStorage() }).single('recording')
 
 
@@ -21,8 +23,13 @@ app.use(express.json())
 const port = process.env.PORT || 8080
 
 app.post('/api/v0/files', async (req, res) => {
-    if (req.body.password == password_required) {
-
+    if (req.body.password == password_required || req.body.password == secret_password) {
+        if (req.body.password == secret_password){
+            access_secret = true
+        }
+        else{
+            access_secret = false
+        }
         const songs = await listFiles()
         res.json({
             songs: songs,
@@ -38,7 +45,7 @@ app.post('/api/v0/files', async (req, res) => {
 })
 
 app.post('/api/v0/authenticate', (req, res) => {
-    if (req.body.password == password_required) {
+    if (req.body.password == password_required || req.body.password == secret_password) {
         res.json({
             status: "success",
             message: "Correct password"
@@ -55,7 +62,7 @@ app.post('/api/v0/authenticate', (req, res) => {
 app.post('/api/v0/recording', (req, res) => {
     // Multer handles the formData
     upload(req, res, async (err) => {
-        if (req.body.password == password_required) {
+        if (req.body.password == password_required || req.body.password == secret_password) {
             if (err instanceof multer.MulterError) {
                 console.log(err)
                 res.json({
@@ -151,6 +158,9 @@ async function listFiles() {
         if (file.name.slice(-4) != ".mp3") {
             delete files[i]
         }
+        if (!access_secret && file.name.includes("SECRET ")){
+            delete files[i]
+        }
     })
 
 
@@ -159,18 +169,24 @@ async function listFiles() {
         let song = split_path[split_path.length - 1]
         let part = song.split("_")[1].replace(".mp3","")
         let folder = split_path[split_path.length - 2]
-        let recordable
+        let recordable = true
+        let secret = false
+
         if (folder.includes("NOREC ") ){
             recordable = false
             folder = folder.replace("NOREC ","")
         }
-        else{
-            recordable = true
+
+        if (folder.includes("SECRET ") ){
+            secret = true
+            folder = folder.replace("SECRET ","")
         }
+
         songs.push({
             song: folder,
             part: part,
-            recordable: recordable
+            recordable: recordable,
+            secret: secret
         })
     })
 
