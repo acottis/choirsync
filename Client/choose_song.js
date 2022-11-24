@@ -143,6 +143,8 @@ backing_player.addEventListener("ended", event => {
     backing_audio_playing = false
 });
 
+let audioCtx
+
 document.addEventListener('play', function(e){
     var audios = document.getElementsByTagName('audio');
     for(var i = 0, len = audios.length; i < len;i++){
@@ -150,4 +152,16 @@ document.addEventListener('play', function(e){
             audios[i].pause();
         }
     }
+
+    if (!audioCtx) {
+      audioCtx = new AudioContext();
+    }
+    let source = new MediaElementAudioSourceNode(audioCtx, {
+      mediaElement: backing_player,
+    });
+    // let panNode = new StereoPannerNode(audioCtx);
+    // panNode.pan.value = -1;
+    // source.connect(panNode);
+    // panNode.connect(audioCtx.destination);
 }, true);
+
