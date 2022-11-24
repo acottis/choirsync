@@ -159,9 +159,9 @@ document.addEventListener('play', function(e){
     let source = new MediaElementAudioSourceNode(audioCtx, {
       mediaElement: backing_player,
     });
-    // let panNode = new StereoPannerNode(audioCtx);
-    // panNode.pan.value = -1;
-    // source.connect(panNode);
-    // panNode.connect(audioCtx.destination);
+    let panNode = new StereoPannerNode(audioCtx);
+    panNode.pan.value = 0;
+    source.connect(panNode);
+    panNode.connect(audioCtx.destination);
 }, true);
 
