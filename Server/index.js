@@ -18,9 +18,18 @@ const upload = multer({ storage: multer.memoryStorage() }).single('recording')
 
 const gstorage = new Storage();
 
+// Create web server
 const app = express()
+// Middleware
 app.use(express.json())
+app.use('/', express.static('Client'))
+
+// Start listening for incomming TCP
 const port = process.env.PORT || 8080
+app.listen(port, () => {
+    console.log(`Listening on port: ${port}`);
+});
+
 
 app.post('/api/v0/files', async (req, res) => {
     if (req.body.password == password_required || req.body.password == secret_password) {
@@ -139,14 +148,6 @@ const discord_webhook = (req) => {
         //     console.log(res.status)
         // })
 }
-
-
-app.use('/', express.static('Client'))
-
-app.listen(port, () => {
-    console.log(`Listening on port: ${port}`);
-});
-
 
 async function listFiles() {
     // Lists files in the bucket

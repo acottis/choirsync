@@ -12,7 +12,7 @@ a{
 .red{color: red;}
 .mini{font-size: 10px}
 
-#requires_password,#no_record{
+#requires_password,#no_record,.sim,.adv,.rec{
     display: none;
 }
 
@@ -32,11 +32,14 @@ select{
     font-size: 20px;
 }
 
-#choose,#practice,#record,#no_record{
+#buttons,#choose,#practice,#record,#no_record{
     text-align: center;
 }
 #practice{
     padding: 20px 0;
+}
+#adv_text{
+    font-size: 14px;
 }
 #no_record{
     padding: 50px 0 0;

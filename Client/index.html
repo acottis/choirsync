@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Còisir Ghàidhlig Shruighlea Recording Studio</title>
+        <title>Còisir Ghàidhlig Shruighlea Music Site</title>
         <link rel="stylesheet" href="styles.css">
     </head>
 
@@ -10,61 +10,93 @@
             <h1>Currently under construction, things might look odd or not work!</h1>
             <form id="form_authenticate">
                 <h1>Please enter a password</h1>
-                <input type="text" id="password_entered" autofocus="autofocus" >
+                <input type="text" id="password_entered" autofocus="autofocus">
                 <br><br>
                 <input type="submit" id="button_authenticate" isdefault="true" value ="Enter" class="big_button">
             </form>
-            <p>Recordings with this site work best if you use a computer or laptop. If you need to though, you can use a tablet or phone.</p>
             <p>If you have trouble logging in, try using a different browser (e.g. Chrome, Edge) or updating your browser to the latest version.</p>
         </div>
 
         <div id="requires_password">
-            <h1>Currently under construction, things might look odd or not work!</h1>
-            <div id="choose">
+
+            <div id = "buttons">
+                <button id="want_sim" class="big_button">I want to practise (simple player)</button>
+                <button id="want_adv" class="big_button">I want to practise (stereo player)</button>
+                <button id="want_rec" class="big_button">I want to record</button>
+            </div>
+
+            <div id="choose" class="sim adv rec">
+                <h1>Currently under construction, things might look odd or not work!</h1>
                 <h1>Select a backing track</h1>
                 <label for="choose_song">Choose a song:</label>
                 <select id="choose_song">
                     <option value="blank">-----</option>
                 </select>
                 <br>
-                <label for="choose_track">Choose a track:</label>
-                <select id="choose_track">
-                    <option value="blank">-----</option>
-                </select>
-            </div>
-            
-            <div class="row">
-                <div id="practice" class="half">
-                    <h1>Just want to practise?</h1>
-                    <audio crossorigin="anonymous" controls id="backing_player"></audio>
+                <div class="sim rec">
+                    <label for="choose_track">Choose a track:</label>
+                    <select id="choose_track">
+                        <option value="blank">-----</option>
+                    </select>
                     <br>
                 </div>
+                <div class="adv">
+                    <div class="half">
+                        <label for="choose_trackL">Choose a track for your LEFT ear:</label>
+                        <br>
+                        <select id="choose_trackL">
+                            <option value="blank">None</option>
+                        </select>
+                    </div>
+                    <div class="half">
+                        <label for="choose_trackR">Choose a track for your RIGHT ear:</label>
+                        <br>
+                        <select id="choose_trackR">
+                            <option value="blank">None</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="practice" class="sim adv">
+                <div class="sim">
+                    <audio crossorigin="anonymous" controls id="backing_player"></audio>
+                </div>
+                <div class="adv">
+                    <audio crossorigin="anonymous" controls id="dual_player1"></audio> 
+                    <audio crossorigin="anonymous" id="dual_player2"></audio>
+                    <br>
+                    <br>
+                    <div id="adv_text">
+                        <p>Before you use this stereo player, please check that you are using head/earphones which can play stereo sound, and that left and right are the right way around.</p>
+                        <p><a href="https://www.youtube.com/watch?v=YwNs1Z0qRY0" target="_blank" rel="noopener noreferrer">Click here to watch a youtube video to check.</a></p>
+                    </div>
+                </div>
+            </div>
 
-                <div id="record" class="half">
-                    <h1>Ready to record?</h1>
+            <div class="rec">
+
+                <div id="record">
                     <button id="button_rec_test"><b>Test</b> (records a few seconds and plays it back)</button>
                     <br>
                     <button id="button_rec" class="big_button">Record</button>
                     <button id="button_stop_rec" class="big_button">Stop</button>
                 </div>
-                <div id="no_record" class="half">
-                    <p>Sorry, this song isn't ready for recording, but you can still listen and practise on the left!</p>
+                <div id="no_record">
+                    <p>Sorry, this song isn't ready for recording, but you can still listen and practise with the other buttons!</p>
                 </div>
-            </div>
-
-            <div class="row">
 
                 <div id="info" class="half">
                     <h1>Instructions for recording</h1>
-                    <p>You can practise without recording on the left. When you’re ready to record, use the buttons on the right. The record button will turn red to show you're recording.</p>
+                    <p>Recording works best if you use a computer or laptop. If you need to though, you can use a tablet or phone. If something's not working, try using a different browser (e.g. Chrome, Edge) or updating your browser to the latest version.</p>
                     <p>Please do a quick test recording first to check you don’t have any problems with your setup, and check the troubleshooting guide below if it didn't sound right. Make sure you use head/earphones so that the recording will only pick up your voice and not the backing track playing out of speakers.</p>
+                    <p>The record button will turn red to show you're recording.</p>
                     <p>Your recordings will show up on the right. You can do as many takes as you like, listen back to them, and then send on your favourite. I’ll only be able to see the ones you choose to send on.</p>
                     <p>You can record along to any track you like, whether that’s your own part, another part, or a track with all parts.</p>
-                    <p>Recording works best if you use a computer. If you need to though, you can use a tablet or phone. If something's not working, try using a different browser (e.g. Chrome, Edge) or updating your browser to the latest version.</p>
                     <p>Thanks!</p>
 
                     <h2 class="red">Important</h2>
-                    <p class="red">The recordings are <b>only saved while you stay on this page!</b> If you leave this site and come back, or refresh the page, they will be gone. Until you send a recording it is not saved anywhere, and there is no way to get it back. So please make sure you send a recording when you’re done.</p>
+                    <p class="red">The recordings are <b>only saved while you stay on choir.ashdown.scot!</b> You can switch between the practise and record buttons at the top, but if you leave this site altogether or refresh the page, they will be gone. Until you send a recording it is not saved anywhere, and there is no way to get it back. So please make sure you send a recording when you’re done.</p>
                     
                     <h2>Troubleshooting</h2>
                     <p>Do you know where your microphone is? It might not be where you expect!</p>

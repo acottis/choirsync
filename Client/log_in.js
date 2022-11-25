@@ -31,7 +31,6 @@ const authenticate = (password_passed) => {
             method: "post",
             headers: {
             'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: JSON.stringify(password_send)
         })
