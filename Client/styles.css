@@ -38,8 +38,8 @@ select{
 #practice{
     padding: 20px 0;
 }
-#adv_text{
-    font-size: 14px;
+.player_text{
+    font-size: 13px;
 }
 #no_record{
     padding: 50px 0 0;
