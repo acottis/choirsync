@@ -12,15 +12,16 @@ const singing_part_chooseR = document.getElementById("choose_trackR")
 const backing_player = document.getElementById("backing_player")
 const dual_player1 = document.getElementById("dual_player1")
 const dual_player2 = document.getElementById("dual_player2")
-const record_area = document.getElementById("record")
-const no_record_area = document.getElementById("no_record")
 
+const yes_record_divs = document.querySelectorAll('.yes_record')
+const no_record_divs = document.querySelectorAll('.no_record')
 const simdivs = document.querySelectorAll('.sim')
 const advdivs = document.querySelectorAll('.adv')
 const recdivs = document.querySelectorAll('.rec')
 
 let all_song_list = []
-let recordable
+let recordable = true
+let on_rec_tab
 let secret
 let audioCtx1
 let audioCtx2
@@ -124,13 +125,23 @@ song_name_choose.onchange = function (){
     dual_player1.setAttribute("src", "")
     dual_player2.setAttribute("src", "")
     change_track_names()
-    if (!recordable){
-        record_area.style.display = "none";
-        no_record_area.style.display = "inline";
-    }
-    else{
-        record_area.style.display = null;
-        no_record_area.style.display = null;
+    if(on_rec_tab){
+        if(!recordable){
+            yes_record_divs.forEach(div => {
+                div.style.display = "none"
+            });
+            no_record_divs.forEach(div => {
+                div.style.display = "inline"
+            });
+        }
+        else{
+            yes_record_divs.forEach(div => {
+                div.style.display = "block"
+            });
+            no_record_divs.forEach(div => {
+                div.style.display = "none"
+            });
+        }
     }
 }
 
@@ -249,6 +260,7 @@ want_sim.onclick = function(){
     simdivs.forEach(div => {
         div.style.display = "block"
     });
+    on_rec_tab = false
 }
 want_adv.onclick = function(){
     pause_all()
@@ -261,6 +273,7 @@ want_adv.onclick = function(){
     advdivs.forEach(div => {
         div.style.display = "block"
     });
+    on_rec_tab = false
 }
 want_rec.onclick = function(){
     pause_all()
@@ -273,6 +286,12 @@ want_rec.onclick = function(){
     recdivs.forEach(div => {
         div.style.display = "block"
     });
+    on_rec_tab = true
+    if(!recordable){
+        yes_record_divs.forEach(div => {
+            div.style.display = "none"
+        });
+    }
 }
 
 const pause_all = () => {

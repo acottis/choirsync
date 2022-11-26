@@ -33,7 +33,7 @@
                     <option value="blank">-----</option>
                 </select>
                 <br>
-                <div class="sim rec">
+                <div class="sim rec yes_record">
                     <label for="choose_track">Choose a track:</label>
                     <select id="choose_track">
                         <option value="blank">-----</option>
@@ -65,27 +65,26 @@
                 <div class="adv">
                     <audio crossorigin="anonymous" controls id="dual_player1"></audio> 
                     <audio crossorigin="anonymous" id="dual_player2"></audio>
+                </div>
+                <div class="player_text">
                     <br>
-                    <br>
-                    <div class="player_text">
+                    <div class="adv">
                         <p>Before you use this stereo player, please check that you are using head/earphones which can play stereo sound, and that left and right are the right way around. <a href="https://www.youtube.com/watch?v=YwNs1Z0qRY0" target="_blank" rel="noopener noreferrer">Click here to watch a youtube video to check.</a></p>
                         <p>If the tracks are out of sync, pause and it should line up again when you press play.</p>
                     </div>
-                </div>
-                <div class="player_text">
                     <p>In some browsers (e.g. Chrome, Edge) you will see a a 3-dot icon on the player, which will let you speed up or slow down the track.</p>
                 </div>
             </div>
 
             <div class="rec">
 
-                <div id="record">
+                <div class="yes_record">
                     <button id="button_rec_test"><b>Test</b> (records a few seconds and plays it back)</button>
                     <br>
                     <button id="button_rec" class="big_button">Record</button>
                     <button id="button_stop_rec" class="big_button">Stop</button>
                 </div>
-                <div id="no_record">
+                <div class="no_record">
                     <p>Sorry, this song isn't ready for recording, but you can still listen and practise with the other buttons!</p>
                 </div>
 
