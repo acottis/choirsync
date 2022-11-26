@@ -228,6 +228,7 @@ dual_player1.addEventListener("play", event => {
     dual_player2.playbackRate = dual_player1.playbackRate
     dual_player2.muted = dual_player1.muted
     dual_player2.play()
+    console.log("hello safari?")
     backing_audio_playing = true
 });
 dual_player1.addEventListener("pause", event => {
