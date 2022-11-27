@@ -17,14 +17,16 @@ const yes_record_divs = document.querySelectorAll('.yes_record')
 const no_record_divs = document.querySelectorAll('.no_record')
 const simdivs = document.querySelectorAll('.sim')
 const advdivs = document.querySelectorAll('.adv')
+const safaridivs = document.querySelectorAll('.safari')
 const recdivs = document.querySelectorAll('.rec')
 
 let all_song_list = []
 let recordable = true
 let on_rec_tab
+let is_safari
+
 let secret
-let audioCtx1
-let audioCtx2
+let audioCtx
 
 export let song_name
 export let singing_part
@@ -32,6 +34,10 @@ export let backing_track_file
 export let song_is_chosen = false
 export let backing_audio_playing = false
 export let mimetype_chosen
+
+if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+    is_safari = true
+}
 
 export const set_up_songs = async () => {
     get_songs().then ( password_correct => {
@@ -204,23 +210,22 @@ backing_player.addEventListener("ended", event => {
 
 dual_player1.addEventListener("play", event => {
 
-    if (!audioCtx1) {
-      audioCtx1 = new AudioContext();
-      audioCtx2 = new AudioContext();
-        let source1 = new MediaElementAudioSourceNode(audioCtx1, {
-        mediaElement: dual_player1,
+    if (!audioCtx) {
+      audioCtx = new AudioContext();
+        let source1 = new MediaElementAudioSourceNode(audioCtx, {
+            mediaElement: dual_player1,
         });
-        let source2 = new MediaElementAudioSourceNode(audioCtx2, {
-        mediaElement: dual_player2,
+        let source2 = new MediaElementAudioSourceNode(audioCtx, {
+            mediaElement: dual_player2,
         });
-        let panNode1 = new StereoPannerNode(audioCtx1);
-        let panNode2 = new StereoPannerNode(audioCtx2);
+        let panNode1 = new StereoPannerNode(audioCtx);
+        let panNode2 = new StereoPannerNode(audioCtx);
         panNode1.pan.value = -1;
         panNode2.pan.value = 1;
         source1.connect(panNode1);
         source2.connect(panNode2);
-        panNode1.connect(audioCtx1.destination);
-        panNode2.connect(audioCtx2.destination);
+        panNode1.connect(audioCtx.destination);
+        panNode2.connect(audioCtx.destination);
     }
 
     dual_player2.currentTime = dual_player1.currentTime
@@ -228,7 +233,6 @@ dual_player1.addEventListener("play", event => {
     dual_player2.playbackRate = dual_player1.playbackRate
     dual_player2.muted = dual_player1.muted
     dual_player2.play()
-    console.log("hello safari?")
     backing_audio_playing = true
 });
 dual_player1.addEventListener("pause", event => {
@@ -271,9 +275,22 @@ want_adv.onclick = function(){
     recdivs.forEach(div => {
         div.style.display = "none"
     });
-    advdivs.forEach(div => {
-        div.style.display = "block"
-    });
+    if(is_safari){
+        advdivs.forEach(div => {
+            div.style.display = "none"
+        });
+        safaridivs.forEach(div => {
+            div.style.display = "block"
+        });
+    }
+    else{
+        advdivs.forEach(div => {
+            div.style.display = "block"
+        });
+        safaridivs.forEach(div => {
+            div.style.display = "none"
+        });
+    }
     on_rec_tab = false
 }
 want_rec.onclick = function(){

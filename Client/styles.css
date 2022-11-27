@@ -32,13 +32,13 @@ select{
     font-size: 20px;
 }
 
-#buttons,#choose,#practice,.yes_record,.no_record{
+#buttons,#choose,#practice,.yes_record,.no_record,.safari{
     text-align: center;
 }
 #practice{
     padding: 20px 0;
 }
-.player_text{
+.player_text,.safari{
     font-size: 14px;
 }
 .no_record{
