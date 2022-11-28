@@ -24,9 +24,12 @@ let all_song_list = []
 let recordable = true
 let on_rec_tab
 let is_safari
-
 let secret
+
 let audioCtx
+let panNode1
+let panNode2
+let switch_channels = false
 
 export let song_name
 export let singing_part
@@ -127,27 +130,29 @@ const get_songs = () => {
 song_name_choose.onchange = function (){
     song_name = song_name_choose.value
     song_is_chosen = false
-    backing_player.setAttribute("src", "")
-    dual_player1.setAttribute("src", "")
-    dual_player2.setAttribute("src", "")
+    backing_player.removeAttribute("src")
+    dual_player1.removeAttribute("src")
+    dual_player2.removeAttribute("src")
     change_track_names()
-    if(on_rec_tab){
-        if(!recordable){
+    if(!recordable){
+        if(on_rec_tab){
             yes_record_divs.forEach(div => {
                 div.style.display = "none"
             });
-            no_record_divs.forEach(div => {
-                div.style.display = "inline"
-            });
         }
-        else{
+        no_record_divs.forEach(div => {
+            div.style.display = "inline"
+        });
+    }
+    else{
+        if(on_rec_tab){
             yes_record_divs.forEach(div => {
                 div.style.display = "block"
             });
-            no_record_divs.forEach(div => {
-                div.style.display = "none"
-            });
         }
+        no_record_divs.forEach(div => {
+            div.style.display = "none"
+        });
     }
 }
 
@@ -178,13 +183,24 @@ const change_track = (chosen_part, player) => {
             backing_player.setAttribute("src", backing_track_file)
             break;
         case "L":
-            dual_player1.setAttribute("src", backing_track_file)
+            if(backing_track_file == ""){
+                dual_player1.setAttribute("src", dual_player2.src)
+                dual_player2.muted=true
+                switch_channels=true
+            }
+            else{
+                dual_player1.setAttribute("src", backing_track_file)
+                switch_channels=false
+            }
             dual_player2.pause()
             break;
         case "R":
             dual_player2.setAttribute("src", backing_track_file)
             dual_player1.pause()
             dual_player1.currentTime=0
+            if(dual_player1.src==""){
+                change_track("blank", "L")
+            }
     }
 }
 
@@ -218,8 +234,8 @@ dual_player1.addEventListener("play", event => {
         let source2 = new MediaElementAudioSourceNode(audioCtx, {
             mediaElement: dual_player2,
         });
-        let panNode1 = new StereoPannerNode(audioCtx);
-        let panNode2 = new StereoPannerNode(audioCtx);
+        panNode1 = new StereoPannerNode(audioCtx);
+        panNode2 = new StereoPannerNode(audioCtx);
         panNode1.pan.value = -1;
         panNode2.pan.value = 1;
         source1.connect(panNode1);
@@ -231,7 +247,15 @@ dual_player1.addEventListener("play", event => {
     dual_player2.currentTime = dual_player1.currentTime
     dual_player2.volume = dual_player1.volume
     dual_player2.playbackRate = dual_player1.playbackRate
-    dual_player2.muted = dual_player1.muted
+    if(switch_channels){
+        panNode1.pan.value = 1;
+        panNode2.pan.value = -1;
+    }
+    else{
+        panNode1.pan.value = -1;
+        panNode2.pan.value = 1;
+        dual_player2.muted = dual_player1.muted
+    }
     dual_player2.play()
     backing_audio_playing = true
 });
